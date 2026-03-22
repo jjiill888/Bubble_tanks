@@ -1,0 +1,129 @@
+[gd_scene format=3 uid="uid://cg7uht01eo43e"]
+
+[ext_resource type="Script" uid="uid://owo3juelipgg" path="res://Main.gd" id="1_main"]
+[ext_resource type="PackedScene" path="res://Turret.tscn" id="2_main"]
+[ext_resource type="PackedScene" path="res://Enemy.tscn" id="3_main"]
+[ext_resource type="PackedScene" path="res://Bullet.tscn" id="4_main"]
+[ext_resource type="PackedScene" path="res://EnemyCompound.tscn" id="5_main"]
+[ext_resource type="AudioStreamOggVorbis" path="res://Microscopic_Pursuit.ogg" id="6_bgm"]
+
+[node name="Main" type="Node2D" unique_id=680605540]
+script = ExtResource("1_main")
+enemy_scene = ExtResource("3_main")
+compound_enemy_scene = ExtResource("5_main")
+
+[node name="Turret" parent="." unique_id=1029972428 instance=ExtResource("2_main")]
+bullet_scene = ExtResource("4_main")
+
+[node name="Bullets" type="Node2D" parent="." unique_id=46110144]
+
+[node name="Enemies" type="Node2D" parent="." unique_id=112038631]
+
+[node name="BGM" type="AudioStreamPlayer" parent="." unique_id=200324991]
+process_mode = 3
+stream = ExtResource("6_bgm")
+bus = &"Master"
+volume_db = -2.0
+
+[node name="SpawnTimer" type="Timer" parent="." unique_id=911129015]
+autostart = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1876817203]
+
+[node name="ScoreLabel" type="Label" parent="CanvasLayer" unique_id=296858615]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 300.0
+offset_bottom = 65.0
+theme_override_colors/font_color = Color(0.75, 0.95, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 30
+text = "击落: 0"
+
+[node name="HPLabel" type="Label" parent="CanvasLayer" unique_id=482633356]
+offset_left = 20.0
+offset_top = 60.0
+offset_right = 240.0
+offset_bottom = 100.0
+theme_override_colors/font_color = Color(0.4, 1, 0.45, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 26
+text = "HP: 50 / 50"
+
+[node name="LevelLabel" type="Label" parent="CanvasLayer" unique_id=590513349]
+offset_left = 20.0
+offset_top = 98.0
+offset_right = 220.0
+offset_bottom = 134.0
+theme_override_colors/font_color = Color(0.95, 0.9, 0.4, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 24
+text = "等级: 1"
+
+[node name="GameOverBG" type="ColorRect" parent="CanvasLayer" unique_id=588314279]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.75)
+
+[node name="GameOverBox" type="VBoxContainer" parent="CanvasLayer" unique_id=859001746]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -140.0
+offset_right = 220.0
+offset_bottom = 140.0
+theme_override_constants/separation = 22
+
+[node name="GameOverTitle" type="Label" parent="CanvasLayer/GameOverBox" unique_id=696998094]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.35, 0.25, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 64
+text = "游戏结束"
+horizontal_alignment = 1
+
+[node name="FinalScoreLabel" type="Label" parent="CanvasLayer/GameOverBox" unique_id=1729464723]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.95, 0.95, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 36
+text = "最终得分：0"
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="CanvasLayer/GameOverBox" unique_id=1345142172]
+process_mode = 3
+custom_minimum_size = Vector2(0, 55)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 30
+text = "重新开始"
+
+[node name="QuitButton" type="Button" parent="CanvasLayer/GameOverBox" unique_id=1556331242]
+process_mode = 3
+custom_minimum_size = Vector2(0, 55)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 30
+text = "退出游戏"
+
+[connection signal="timeout" from="SpawnTimer" to="." method="_on_spawn_timer_timeout"]
+[connection signal="pressed" from="CanvasLayer/GameOverBox/RestartButton" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/GameOverBox/QuitButton" to="." method="_on_quit_button_pressed"]

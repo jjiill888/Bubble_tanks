@@ -1,0 +1,43 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://EnemyCompound.gd" id="1_compound"]
+[ext_resource type="Script" path="res://BubblePart.gd" id="2_bubblepart"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_big"]
+radius = 26.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_left"]
+radius = 15.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_right"]
+radius = 15.0
+
+[node name="EnemyCompound" type="Area2D"]
+script = ExtResource("1_compound")
+
+[node name="BigBubble" type="Area2D" parent="."]
+position = Vector2(0, -4)
+script = ExtResource("2_bubblepart")
+max_hp = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BigBubble"]
+shape = SubResource("CircleShape2D_big")
+
+[node name="SmallBubbleLeft" type="Area2D" parent="."]
+position = Vector2(-23, 13)
+script = ExtResource("2_bubblepart")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SmallBubbleLeft"]
+shape = SubResource("CircleShape2D_left")
+
+[node name="SmallBubbleRight" type="Area2D" parent="."]
+position = Vector2(23, 13)
+script = ExtResource("2_bubblepart")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SmallBubbleRight"]
+shape = SubResource("CircleShape2D_right")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+rect = Rect2(-40, -32, 80, 58)
+
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_screen_exited"]

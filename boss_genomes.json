@@ -1,0 +1,2582 @@
+[
+  {
+	"fitness": 0.9352,
+	"valid_bubbles": 19,
+	"genome": {
+	  "core_radius": 44.72,
+	  "initial_heading": 4.257,
+	  "turn_rate": 1.189,
+	  "preferred_range": 170.84,
+	  "orbit_weight": 0.482,
+	  "orbit_dir": -1,
+	  "aim_lead": 0.123,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.3808,
+		  "radius": 11.58,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2893,
+		  "radius": 11.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 2.7669,
+		  "radius": 19.8,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 0.1716,
+		  "radius": 16.26,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 1,
+		  "angle": 4.6404,
+		  "radius": 15.88,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 3.216,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 2.7062,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 2.7204,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 17.05,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9774,
+		  "radius": 11.11,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 3.2654,
+		  "radius": 11.52,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 17.95,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 6.2677,
+		  "radius": 20.5,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.5543,
+		  "radius": 19.92,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 6.0572,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 6.1873,
+		  "radius": 16.05,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.4976,
+		  "radius": 11.45,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.9346,
+	"valid_bubbles": 19,
+	"genome": {
+	  "core_radius": 47.1,
+	  "initial_heading": 0.4176,
+	  "turn_rate": 1.345,
+	  "preferred_range": 170.54,
+	  "orbit_weight": 0.481,
+	  "orbit_dir": 1,
+	  "aim_lead": 0.157,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.3173,
+		  "radius": 15.46,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2677,
+		  "radius": 11.39,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 2.7395,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 0.1211,
+		  "radius": 18.45,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 4.621,
+		  "radius": 15.75,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 2.6274,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 3.1095,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 3.206,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 11.42,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9251,
+		  "radius": 11.82,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 3.2654,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 20.81,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 6.2677,
+		  "radius": 16.16,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.7128,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 6.0572,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 5.8198,
+		  "radius": 14.29,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.4976,
+		  "radius": 11.45,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.6977,
+	"valid_bubbles": 14,
+	"genome": {
+	  "core_radius": 48.85,
+	  "initial_heading": 0.4176,
+	  "turn_rate": 1.182,
+	  "preferred_range": 146.97,
+	  "orbit_weight": 0.555,
+	  "orbit_dir": -1,
+	  "aim_lead": 0.126,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.3173,
+		  "radius": 17.12,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2677,
+		  "radius": 11.39,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 1.7848,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 5.6815,
+		  "radius": 18.45,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 14.15,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 4.621,
+		  "radius": 15.75,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 2.6274,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 3.1095,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 3.206,
+		  "radius": 21.9,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 11.42,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.3166,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 3.2654,
+		  "radius": 12.84,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 20.81,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 0.5363,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.7197,
+		  "radius": 16.88,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.034,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 14,
+		  "angle": 5.8198,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 0.432,
+		  "radius": 11.0,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.4999,
+	"valid_bubbles": 8,
+	"genome": {
+	  "core_radius": 45.05,
+	  "initial_heading": 1.0994,
+	  "turn_rate": 0.972,
+	  "preferred_range": 170.2,
+	  "orbit_weight": 0.161,
+	  "orbit_dir": -1,
+	  "aim_lead": 0.012,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.4265,
+		  "radius": 17.59,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2677,
+		  "radius": 11.39,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.4535,
+		  "radius": 20.62,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 0.1211,
+		  "radius": 16.94,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 4.8674,
+		  "radius": 15.75,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 2.7055,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 3.1095,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 3.0874,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 11.42,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9251,
+		  "radius": 12.29,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 3.2654,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 20.81,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 6.2677,
+		  "radius": 20.5,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.7197,
+		  "radius": 16.88,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 6.0572,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 5.8198,
+		  "radius": 14.29,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.4976,
+		  "radius": 11.45,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.4214,
+	"valid_bubbles": 8,
+	"genome": {
+	  "core_radius": 45.36,
+	  "initial_heading": 1.9282,
+	  "turn_rate": 1.338,
+	  "preferred_range": 157.28,
+	  "orbit_weight": 0.646,
+	  "orbit_dir": 1,
+	  "aim_lead": 0.147,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.4265,
+		  "radius": 20.55,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 2.5378,
+		  "radius": 11.39,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 2.8707,
+		  "radius": 21.5,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 0.1211,
+		  "radius": 16.94,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 4.621,
+		  "radius": 15.75,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 2.6274,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 3.1095,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 3.0874,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 14.25,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9251,
+		  "radius": 11.17,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 3.2654,
+		  "radius": 11.94,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.5388,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 20.81,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 8,
+		  "angle": 6.2677,
+		  "radius": 20.5,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.5543,
+		  "radius": 21.95,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.9261,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 6.1873,
+		  "radius": 16.05,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.4976,
+		  "radius": 11.45,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.9352,
+	"valid_bubbles": 19,
+	"genome": {
+	  "core_radius": 44.72,
+	  "initial_heading": 4.257,
+	  "turn_rate": 1.189,
+	  "preferred_range": 170.84,
+	  "orbit_weight": 0.482,
+	  "orbit_dir": -1,
+	  "aim_lead": 0.123,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.3808,
+		  "radius": 11.58,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2893,
+		  "radius": 11.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 2.7669,
+		  "radius": 19.8,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 0.1716,
+		  "radius": 16.26,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 1,
+		  "angle": 4.6404,
+		  "radius": 15.88,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 3.216,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 2.7062,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 2.7204,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 17.05,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9774,
+		  "radius": 11.11,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 3.2654,
+		  "radius": 11.52,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 17.95,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 6.2677,
+		  "radius": 20.5,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.5543,
+		  "radius": 19.92,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 6.0572,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 6.1873,
+		  "radius": 16.05,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.4976,
+		  "radius": 11.45,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.9351,
+	"valid_bubbles": 19,
+	"genome": {
+	  "core_radius": 46.42,
+	  "initial_heading": 0.4176,
+	  "turn_rate": 0.6,
+	  "preferred_range": 169.87,
+	  "orbit_weight": 0.48,
+	  "orbit_dir": -1,
+	  "aim_lead": 0.128,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.4265,
+		  "radius": 17.59,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2677,
+		  "radius": 11.39,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 2.8707,
+		  "radius": 21.5,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 0.1211,
+		  "radius": 16.94,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 4.621,
+		  "radius": 15.75,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 2.6274,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 3.1095,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 3.0874,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 11.42,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9251,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 3.2654,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 20.81,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 6.2677,
+		  "radius": 20.5,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.7197,
+		  "radius": 16.88,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 6.1921,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 5.8198,
+		  "radius": 14.29,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.3745,
+		  "radius": 11.45,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.9348,
+	"valid_bubbles": 19,
+	"genome": {
+	  "core_radius": 46.03,
+	  "initial_heading": 0.9667,
+	  "turn_rate": 1.313,
+	  "preferred_range": 161.29,
+	  "orbit_weight": 0.554,
+	  "orbit_dir": -1,
+	  "aim_lead": 0.102,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.4265,
+		  "radius": 20.55,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2677,
+		  "radius": 11.39,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 2.8707,
+		  "radius": 21.5,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 0.1211,
+		  "radius": 16.94,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 4.621,
+		  "radius": 15.75,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 2.6274,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 3.1095,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 3.0874,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 11.42,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9251,
+		  "radius": 11.17,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 3.2654,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 20.81,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 6.2677,
+		  "radius": 16.16,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.7197,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 6.0572,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 5.8198,
+		  "radius": 11.7,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.3356,
+		  "radius": 11.45,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.9347,
+	"valid_bubbles": 19,
+	"genome": {
+	  "core_radius": 45.36,
+	  "initial_heading": 0.9667,
+	  "turn_rate": 1.338,
+	  "preferred_range": 154.11,
+	  "orbit_weight": 0.646,
+	  "orbit_dir": -1,
+	  "aim_lead": 0.061,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.4265,
+		  "radius": 20.55,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2677,
+		  "radius": 11.39,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 2.8707,
+		  "radius": 21.5,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 0.1211,
+		  "radius": 16.94,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 4.621,
+		  "radius": 15.75,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 2.6274,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 3.1095,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 3.0874,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 11.42,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9251,
+		  "radius": 11.17,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 3.2654,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 20.81,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 6.2677,
+		  "radius": 20.5,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.5543,
+		  "radius": 21.95,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 6.0572,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 6.1873,
+		  "radius": 16.05,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.4976,
+		  "radius": 11.45,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.9347,
+	"valid_bubbles": 19,
+	"genome": {
+	  "core_radius": 46.28,
+	  "initial_heading": 0.4176,
+	  "turn_rate": 1.437,
+	  "preferred_range": 153.66,
+	  "orbit_weight": 0.48,
+	  "orbit_dir": -1,
+	  "aim_lead": 0.062,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.4265,
+		  "radius": 17.59,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2677,
+		  "radius": 11.39,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 2.8707,
+		  "radius": 21.5,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 0.1211,
+		  "radius": 16.94,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 4.621,
+		  "radius": 15.75,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 2.6274,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 3.1095,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 3.0874,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 11.42,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9251,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 3.2654,
+		  "radius": 12.3,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 20.81,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 6.2677,
+		  "radius": 20.5,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.5543,
+		  "radius": 19.92,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 6.0572,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 0.7995,
+		  "radius": 14.29,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.6647,
+		  "radius": 11.45,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.9346,
+	"valid_bubbles": 19,
+	"genome": {
+	  "core_radius": 47.1,
+	  "initial_heading": 0.4176,
+	  "turn_rate": 1.345,
+	  "preferred_range": 170.54,
+	  "orbit_weight": 0.481,
+	  "orbit_dir": 1,
+	  "aim_lead": 0.157,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.3173,
+		  "radius": 15.46,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2677,
+		  "radius": 11.39,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 2.7395,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 0.1211,
+		  "radius": 18.45,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 4.621,
+		  "radius": 15.75,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 2.6274,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 3.1095,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 3.206,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 11.42,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9251,
+		  "radius": 11.82,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 3.2654,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 20.81,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 6.2677,
+		  "radius": 16.16,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.7128,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 6.0572,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 5.8198,
+		  "radius": 14.29,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.4976,
+		  "radius": 11.45,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.9346,
+	"valid_bubbles": 19,
+	"genome": {
+	  "core_radius": 47.1,
+	  "initial_heading": 0.4176,
+	  "turn_rate": 1.345,
+	  "preferred_range": 170.54,
+	  "orbit_weight": 0.481,
+	  "orbit_dir": -1,
+	  "aim_lead": 0.157,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.3173,
+		  "radius": 15.46,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2677,
+		  "radius": 11.39,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 2.7395,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 0.1211,
+		  "radius": 18.45,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 4.621,
+		  "radius": 15.75,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 2.6274,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 3.1095,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 3.206,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 11.42,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9251,
+		  "radius": 11.82,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 3.2654,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 20.81,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 6.2677,
+		  "radius": 16.16,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.7197,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 6.0572,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 5.8198,
+		  "radius": 14.29,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.4976,
+		  "radius": 11.45,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.9346,
+	"valid_bubbles": 19,
+	"genome": {
+	  "core_radius": 46.28,
+	  "initial_heading": 0.4176,
+	  "turn_rate": 1.23,
+	  "preferred_range": 166.39,
+	  "orbit_weight": 0.445,
+	  "orbit_dir": -1,
+	  "aim_lead": 0.128,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.4265,
+		  "radius": 20.55,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2677,
+		  "radius": 11.39,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 2.8707,
+		  "radius": 21.5,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 0.105,
+		  "radius": 16.94,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.2,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 4.621,
+		  "radius": 15.75,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 2.6274,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 3.1095,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 3.206,
+		  "radius": 19.27,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 11.42,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9251,
+		  "radius": 11.82,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 2.9491,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 20.81,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 6.2677,
+		  "radius": 16.16,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.7197,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 6.0572,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 5.8198,
+		  "radius": 14.29,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.4976,
+		  "radius": 11.45,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.9345,
+	"valid_bubbles": 19,
+	"genome": {
+	  "core_radius": 47.1,
+	  "initial_heading": 0.4176,
+	  "turn_rate": 1.345,
+	  "preferred_range": 170.54,
+	  "orbit_weight": 0.481,
+	  "orbit_dir": -1,
+	  "aim_lead": 0.157,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.3173,
+		  "radius": 15.52,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2677,
+		  "radius": 11.39,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 2.7395,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 0.1211,
+		  "radius": 18.45,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 4.621,
+		  "radius": 15.75,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 2.6274,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 3.1095,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 3.206,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 11.42,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9251,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 3.2654,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 20.81,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 6.2677,
+		  "radius": 16.16,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.7197,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 6.0572,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 5.8198,
+		  "radius": 14.29,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.4976,
+		  "radius": 11.45,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.9345,
+	"valid_bubbles": 19,
+	"genome": {
+	  "core_radius": 46.55,
+	  "initial_heading": 0.4176,
+	  "turn_rate": 1.387,
+	  "preferred_range": 136.66,
+	  "orbit_weight": 0.48,
+	  "orbit_dir": -1,
+	  "aim_lead": 0.0,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.09,
+		  "radius": 16.82,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2677,
+		  "radius": 11.39,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 2.8707,
+		  "radius": 21.5,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 0.1211,
+		  "radius": 16.48,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 4.621,
+		  "radius": 15.75,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 2.6274,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 3.1095,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 3.0874,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 11.42,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9251,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 3.2654,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 20.81,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 6.2677,
+		  "radius": 20.5,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.5543,
+		  "radius": 19.92,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 6.0572,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 5.8198,
+		  "radius": 14.29,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.6647,
+		  "radius": 11.45,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.9344,
+	"valid_bubbles": 19,
+	"genome": {
+	  "core_radius": 46.69,
+	  "initial_heading": 0.4176,
+	  "turn_rate": 1.288,
+	  "preferred_range": 168.46,
+	  "orbit_weight": 0.463,
+	  "orbit_dir": -1,
+	  "aim_lead": 0.142,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.3173,
+		  "radius": 15.46,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2677,
+		  "radius": 11.39,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 2.7395,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 0.1211,
+		  "radius": 18.45,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 4.621,
+		  "radius": 15.75,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 2.6274,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 3.1095,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 3.206,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 11.42,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9251,
+		  "radius": 11.82,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 3.2614,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 20.81,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 6.2677,
+		  "radius": 16.16,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.7197,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 6.0572,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 5.8198,
+		  "radius": 14.29,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.3356,
+		  "radius": 11.45,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.9333,
+	"valid_bubbles": 19,
+	"genome": {
+	  "core_radius": 45.5,
+	  "initial_heading": 0.4176,
+	  "turn_rate": 1.392,
+	  "preferred_range": 168.61,
+	  "orbit_weight": 0.464,
+	  "orbit_dir": -1,
+	  "aim_lead": 0.015,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.3808,
+		  "radius": 11.58,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2893,
+		  "radius": 11.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 2.7669,
+		  "radius": 20.51,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 0.1716,
+		  "radius": 16.26,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 1,
+		  "angle": 4.9653,
+		  "radius": 15.88,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 3.216,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 2.7062,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 2.7204,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 17.05,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9774,
+		  "radius": 11.11,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 3.2654,
+		  "radius": 11.52,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 17.95,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 6.2677,
+		  "radius": 16.16,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.7197,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 6.2404,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 5.8198,
+		  "radius": 14.29,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.4976,
+		  "radius": 11.45,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.9331,
+	"valid_bubbles": 19,
+	"genome": {
+	  "core_radius": 45.67,
+	  "initial_heading": 1.0994,
+	  "turn_rate": 1.101,
+	  "preferred_range": 168.29,
+	  "orbit_weight": 0.303,
+	  "orbit_dir": -1,
+	  "aim_lead": 0.0,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.4265,
+		  "radius": 16.5,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2677,
+		  "radius": 11.39,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 2.8707,
+		  "radius": 21.5,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 0.105,
+		  "radius": 17.4,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.2,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 4.621,
+		  "radius": 15.75,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 2.6274,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 3.1095,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 3.206,
+		  "radius": 19.27,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 11.42,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9251,
+		  "radius": 11.82,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 2.9491,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 20.81,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 6.0939,
+		  "radius": 16.16,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.7197,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 6.0572,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 5.8198,
+		  "radius": 16.34,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.4976,
+		  "radius": 11.45,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.9321,
+	"valid_bubbles": 19,
+	"genome": {
+	  "core_radius": 46.83,
+	  "initial_heading": 0.4176,
+	  "turn_rate": 1.366,
+	  "preferred_range": 153.6,
+	  "orbit_weight": 0.323,
+	  "orbit_dir": -1,
+	  "aim_lead": 0.078,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.09,
+		  "radius": 16.82,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2677,
+		  "radius": 11.39,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 2.8707,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 0.1211,
+		  "radius": 16.48,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 4.621,
+		  "radius": 16.24,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 2.6274,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 3.1095,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 3.0874,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 11.42,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9251,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 3.2654,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 20.81,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 6.2677,
+		  "radius": 20.5,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.4422,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 6.0572,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 5.1387,
+		  "radius": 14.29,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.8703,
+		  "radius": 11.45,
+		  "hp": 2
+		}
+	  ]
+	}
+  },
+  {
+	"fitness": 0.9283,
+	"valid_bubbles": 19,
+	"genome": {
+	  "core_radius": 44.83,
+	  "initial_heading": 0.4176,
+	  "turn_rate": 0.703,
+	  "preferred_range": 167.18,
+	  "orbit_weight": 0.501,
+	  "orbit_dir": -1,
+	  "aim_lead": 0.173,
+	  "satellites": [
+		{
+		  "parent_idx": 0,
+		  "angle": 2.5208,
+		  "radius": 17.13,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 3.2677,
+		  "radius": 11.39,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 2.5055,
+		  "radius": 19.53,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 6.1011,
+		  "radius": 18.45,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 5.1109,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 2,
+		  "angle": 4.621,
+		  "radius": 16.86,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 3,
+		  "angle": 2.6274,
+		  "radius": 22.0,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 6,
+		  "angle": 3.1095,
+		  "radius": 17.16,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 7,
+		  "angle": 3.206,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 0,
+		  "angle": 1.121,
+		  "radius": 11.42,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 9,
+		  "angle": 2.9251,
+		  "radius": 11.82,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 3.2654,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 5,
+		  "angle": 4.4596,
+		  "radius": 11.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 4,
+		  "angle": 5.3249,
+		  "radius": 17.6,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 13,
+		  "angle": 6.2677,
+		  "radius": 20.5,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 5.7197,
+		  "radius": 16.88,
+		  "hp": 2
+		},
+		{
+		  "parent_idx": 15,
+		  "angle": 6.1921,
+		  "radius": 22.0,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 17,
+		  "angle": 5.8198,
+		  "radius": 12.4,
+		  "hp": 1
+		},
+		{
+		  "parent_idx": 10,
+		  "angle": 1.3745,
+		  "radius": 11.0,
+		  "hp": 2
+		}
+	  ]
+	}
+  }
+]
