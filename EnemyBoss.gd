@@ -1,6 +1,8 @@
 class_name EnemyBoss
 extends Node2D
 
+signal network_spawn_payload_ready
+
 # ═══════════════════════════════════════════════════════
 #  常量
 # ═══════════════════════════════════════════════════════
@@ -17,6 +19,7 @@ const DUAL_CORE_CONTACT_DAMAGE := 100
 const ENEMY_BULLET_BASE_SPEED := 320.0
 const FINAL_BOSS_CONTACT_DAMAGE := 160
 const FINAL_BOSS_SPEED := 42.0
+const REGULAR_BOSS_SPEED := 52.0
 const FINAL_BOSS_CORE_COUNT := 5
 const FINAL_BOSS_MIN_TOTAL_BUBBLES := 100
 const FINAL_BOSS_MIN_SATELLITES_PER_CORE := 11
@@ -127,6 +130,19 @@ class BubbleState:
 
 var bubbles: Array = []
 var is_final_boss := false
+var force_sync_generation := false
+var network_entity_id := 0
+var authority_simulation := true
+var is_network_replica := false
+var network_spawn_payload: Dictionary = {}
+var _network_spawn_payload_cache: Dictionary = {}
+var _network_target_position := Vector2.ZERO
+var _network_target_rotation := 0.0
+var _network_target_turret_angles: Array = []
+var _has_network_target := false
+var _payload_turret_count_override := -1
+var _payload_spread_turret_override := false
+var _has_payload_spread_override := false
 
 # ═══════════════════════════════════════════════════════
 #  炮塔系统
@@ -167,6 +183,7 @@ var _bullet_scene       = preload("res://EnemyBullet.tscn")
 var _contact_damage: int = SINGLE_CORE_CONTACT_DAMAGE
 var _contact_overlap_time: float = 0.0
 var _max_turrets_per_cluster: int = -1
+var _max_bubble_extent: float = 0.0
 var _generation_thread: Thread = null
 var _generation_runner: RefCounted = null
 var _generation_pending := false
@@ -180,6 +197,18 @@ func _ready() -> void:
 	add_to_group("boss")
 	if is_final_boss:
 		add_to_group("final_boss")
+	if is_network_replica:
+		_generation_pending = false
+		visible = not network_spawn_payload.is_empty()
+		if not network_spawn_payload.is_empty():
+			_apply_spawn_payload(network_spawn_payload)
+			_network_target_position = global_position
+			_network_target_rotation = rotation
+			_network_target_turret_angles = turret_angles.duplicate()
+			_has_network_target = true
+		set_process(false)
+		return
+	if is_final_boss:
 		_begin_async_final_generation()
 		return
 	var genomes: Array = []
@@ -200,6 +229,9 @@ func _ready() -> void:
 		if _should_spawn_dual_core():
 			genomes.append(_acquire_runtime_genome())
 			print("[EnemyBoss] 生成双核心 Boss，核心数: %d" % genomes.size())
+	if force_sync_generation:
+		_generate_from_genomes(genomes)
+		return
 	_begin_async_regular_generation(genomes)
 
 func _exit_tree() -> void:
@@ -271,6 +303,14 @@ func _apply_spawn_payload(payload: Dictionary) -> void:
 	_generation_pending = false
 	_generation_kind = ""
 	_pending_raw_genomes.clear()
+	_network_spawn_payload_cache = payload.duplicate(true)
+	if payload.has("is_final_boss"):
+		is_final_boss = bool(payload.get("is_final_boss", is_final_boss))
+	if payload.has("turret_count"):
+		_payload_turret_count_override = int(payload.get("turret_count", _payload_turret_count_override))
+	if payload.has("spread_turret"):
+		_payload_spread_turret_override = bool(payload.get("spread_turret", _payload_spread_turret_override))
+		_has_payload_spread_override = true
 	if payload.has("speed"):
 		speed = float(payload.get("speed", speed))
 	if payload.has("max_turrets_per_cluster"):
@@ -279,6 +319,8 @@ func _apply_spawn_payload(payload: Dictionary) -> void:
 	_contact_damage = int(payload.get("contact_damage", SINGLE_CORE_CONTACT_DAMAGE))
 	_finale_from_payload(payload)
 	visible = true
+	if authority_simulation and not is_network_replica:
+		network_spawn_payload_ready.emit()
 
 func _finale_from_payload(payload: Dictionary) -> void:
 	var data: Array = payload.get("data", [])
@@ -345,6 +387,9 @@ static func _build_final_spawn_payload(player_level: int, seed: int) -> Dictiona
 		EnemyBoss._append_final_boss_padding(final_data, cores[0], FINAL_BOSS_MIN_TOTAL_BUBBLES - final_data.size())
 	return {
 		"ok": true,
+		"is_final_boss": true,
+		"turret_count": 2 + player_level,
+		"spread_turret": player_level >= 2,
 		"behavior_genome": behavior_genome,
 		"contact_damage": FINAL_BOSS_CONTACT_DAMAGE,
 		"speed": FINAL_BOSS_SPEED,
@@ -625,8 +670,12 @@ static func _build_regular_spawn_payload(raw_genomes: Array, player_level: int, 
 		merged.append_array(EnemyBoss._build_dual_core_bridge(shifted_clusters[0], shifted_clusters[1], rng))
 	return {
 		"ok": true,
+		"is_final_boss": false,
+		"turret_count": 2 + player_level,
+		"spread_turret": player_level >= 2,
 		"behavior_genome": genomes[0],
 		"contact_damage": DUAL_CORE_CONTACT_DAMAGE if genomes.size() >= 2 else SINGLE_CORE_CONTACT_DAMAGE,
+		"speed": REGULAR_BOSS_SPEED,
 		"data": merged,
 		"cluster_count": cluster_data.size(),
 	}
@@ -1054,8 +1103,11 @@ func _finalize_from_data(data: Array, cluster_count: int) -> void:
 	turret_indices.clear()
 	turret_angles.clear()
 	turret_spread.clear()
+	_max_bubble_extent = 0.0
 
-	var turrets_per_cluster := _s_turret_count if _max_turrets_per_cluster < 0 else mini(_s_turret_count, _max_turrets_per_cluster)
+	var source_turret_count := _payload_turret_count_override if _payload_turret_count_override >= 0 else _s_turret_count
+	var source_spread_turret := _payload_spread_turret_override if _has_payload_spread_override else _s_spread_turret
+	var turrets_per_cluster := source_turret_count if _max_turrets_per_cluster < 0 else mini(source_turret_count, _max_turrets_per_cluster)
 	for cluster_id in range(cluster_count):
 		var candidates: Array = []
 		for idx in range(data.size()):
@@ -1067,7 +1119,7 @@ func _finalize_from_data(data: Array, cluster_count: int) -> void:
 		for i in range(mini(turrets_per_cluster, candidates.size())):
 			turret_indices.append(candidates[i])
 			turret_angles.append(0.0)
-			turret_spread.append(_s_spread_turret and i == 0)
+			turret_spread.append(source_spread_turret and i == 0)
 
 	for i in range(data.size()):
 		var d  = data[i]
@@ -1080,6 +1132,7 @@ func _finalize_from_data(data: Array, cluster_count: int) -> void:
 		bs.module_kind = String(d.get("module_kind", "normal"))
 		bs.cluster_id = int(d.get("cluster_id", 0))
 		bs.allow_turret = bool(d.get("allow_turret", true))
+		_max_bubble_extent = maxf(_max_bubble_extent, bs.pos.length() + bs.radius)
 
 		var area = Area2D.new()
 		area.position = bs.pos
@@ -1097,6 +1150,29 @@ func _finalize_from_data(data: Array, cluster_count: int) -> void:
 
 		bs.area = area
 		bubbles.append(bs)
+
+func hit_by_player_bullet(bullet_pos: Vector2, bullet_radius: float) -> bool:
+	if _generation_pending or bubbles.is_empty():
+		return false
+	var local_bullet_pos := to_local(bullet_pos)
+	var max_reach := _max_bubble_extent + bullet_radius
+	if local_bullet_pos.length_squared() > max_reach * max_reach:
+		return false
+	var hit_idx := -1
+	var best_dist_sq := INF
+	for i in range(bubbles.size()):
+		var bubble: BubbleState = bubbles[i]
+		if not bubble.alive:
+			continue
+		var reach := bubble.radius + bullet_radius
+		var dist_sq := bubble.pos.distance_squared_to(local_bullet_pos)
+		if dist_sq <= reach * reach and dist_sq < best_dist_sq:
+			best_dist_sq = dist_sq
+			hit_idx = i
+	if hit_idx < 0:
+		return false
+	on_bubble_hit(hit_idx)
+	return true
 
 func _compare_data_turret_candidates(a: Dictionary, b: Dictionary) -> bool:
 	var a_score := _data_turret_candidate_score(a)
@@ -1206,9 +1282,9 @@ func _get_alive_hp_ratio() -> float:
 func _evaluate_tactical_mode(player: Node2D, scene: Node, distance: float) -> String:
 	var self_hp_ratio: float = _get_alive_hp_ratio()
 	var player_hp_ratio: float = scene.get_player_hp_ratio() if scene != null and scene.has_method("get_player_hp_ratio") else 1.0
-	var player_dash_cd: float = scene.get_player_dash_cooldown() if scene != null and scene.has_method("get_player_dash_cooldown") else 0.0
+	var player_dash_cd: float = player.get_dash_cooldown() if player != null and player.has_method("get_dash_cooldown") else 0.0
 	var player_dash_ready: bool = player_dash_cd <= 0.15
-	var player_can_fire: bool = scene.is_player_ready_to_fire() if scene != null and scene.has_method("is_player_ready_to_fire") else true
+	var player_can_fire: bool = player.is_ready_to_fire() if player != null and player.has_method("is_ready_to_fire") else true
 	var preferred_range: float = maxf(_preferred_range, 1.0)
 	var dist_ratio: float = distance / preferred_range
 	var lure_pressure: float = _get_lure_pressure()
@@ -1280,12 +1356,14 @@ func _update_utility_ai(player: Node2D, scene: Node, distance: float, delta: flo
 #  每帧逻辑
 # ═══════════════════════════════════════════════════════
 func _process(delta: float) -> void:
+	if not authority_simulation:
+		return
 	if _generation_pending:
 		_poll_async_generation()
 		return
 	var scene: Node = get_tree().current_scene
-	var player: Node2D = scene.get_player_node() if scene and scene.has_method("get_player_node") else get_tree().get_first_node_in_group("player")
-	var target: Vector2 = scene.get_player_position() if scene and scene.has_method("get_player_position") else get_viewport_rect().size * 0.5
+	var player: Node2D = scene.get_nearest_player_node(global_position) if scene and scene.has_method("get_nearest_player_node") else get_tree().get_first_node_in_group("player")
+	var target: Vector2 = player.global_position if is_instance_valid(player) else get_viewport_rect().size * 0.5
 	_sample_target(target, delta)
 	var to_target: Vector2 = target - global_position
 	_update_utility_ai(player, scene, to_target.length(), delta)
@@ -1315,7 +1393,8 @@ func _process(delta: float) -> void:
 		_contact_overlap_time += delta
 		while _contact_overlap_time >= CONTACT_DAMAGE_INTERVAL:
 			_contact_overlap_time -= CONTACT_DAMAGE_INTERVAL
-			scene.take_damage(_contact_damage)
+			var target_peer_id: int = scene.get_player_peer_id(player) if scene and scene.has_method("get_player_peer_id") else 1
+			scene.take_damage(_contact_damage, target_peer_id)
 	else:
 		_contact_overlap_time = 0.0
 
@@ -1365,12 +1444,84 @@ func _fire() -> void:
 			var spawn_position: Vector2 = host_global + Vector2.RIGHT.rotated(fire_angle) * (host.radius + 20.0)
 			var spawn_direction: Vector2 = Vector2.RIGHT.rotated(fire_angle)
 			var spawn_speed: float = ENEMY_BULLET_BASE_SPEED * _s_enemy_bullet_speed_multiplier
+			if scene and scene.has_method("notify_enemy_fire"):
+				scene.notify_enemy_fire(spawn_position, spawn_direction, spawn_speed)
 			if bullet.has_method("activate_from_pool"):
 				bullet.activate_from_pool(spawn_position, spawn_direction, spawn_speed)
 			else:
 				bullet.global_position = spawn_position
 				bullet.direction = spawn_direction
 				bullet.speed = spawn_speed
+
+func configure_network_entity(entity_id: int, authority: bool) -> void:
+	network_entity_id = entity_id
+	authority_simulation = authority
+	if is_inside_tree():
+		set_process(authority)
+
+func is_network_spawn_ready() -> bool:
+	return not _network_spawn_payload_cache.is_empty()
+
+func get_network_spawn_payload() -> Dictionary:
+	return _network_spawn_payload_cache.duplicate(true)
+
+func get_network_entity_state() -> Dictionary:
+	if _generation_pending or bubbles.is_empty():
+		return {}
+	var bubble_hp: Array = []
+	var bubble_alive: Array = []
+	for bubble in bubbles:
+		bubble_hp.append(int(bubble.hp))
+		bubble_alive.append(bool(bubble.alive))
+	return {
+		"pos": global_position,
+		"rot": rotation,
+		"turret_angles": turret_angles.duplicate(),
+		"bubble_hp": bubble_hp,
+		"bubble_alive": bubble_alive,
+	}
+
+func apply_network_entity_state(state: Dictionary) -> void:
+	if state.is_empty():
+		return
+	_network_target_position = state.get("pos", global_position)
+	_network_target_rotation = float(state.get("rot", rotation))
+	var next_turret_angles: Array = state.get("turret_angles", [])
+	if next_turret_angles.size() == turret_angles.size():
+		_network_target_turret_angles = next_turret_angles.duplicate()
+	var bubble_hp: Array = state.get("bubble_hp", [])
+	var bubble_alive: Array = state.get("bubble_alive", [])
+	var state_count := mini(bubbles.size(), mini(bubble_hp.size(), bubble_alive.size()))
+	var needs_redraw := false
+	for i in range(state_count):
+		var bubble: BubbleState = bubbles[i]
+		var next_hp := int(bubble_hp[i])
+		var next_alive := bool(bubble_alive[i])
+		if bubble.hp != next_hp or bubble.alive != next_alive:
+			needs_redraw = true
+		if bubble.alive and not next_alive and is_instance_valid(bubble.area):
+			bubble.area.queue_free()
+		bubble.hp = next_hp
+		bubble.alive = next_alive
+	_has_network_target = true
+	if needs_redraw:
+		queue_redraw()
+
+func tick_network_interpolation(delta: float) -> void:
+	if authority_simulation or not _has_network_target:
+		return
+	var position_blend: float = min(1.0, delta * 10.0)
+	var rotation_blend: float = min(1.0, delta * 12.0)
+	var dist_sq: float = global_position.distance_squared_to(_network_target_position)
+	if dist_sq > 420.0 * 420.0:
+		global_position = _network_target_position
+	else:
+		global_position = global_position.lerp(_network_target_position, position_blend)
+	rotation = lerp_angle(rotation, _network_target_rotation, rotation_blend)
+	if _network_target_turret_angles.size() == turret_angles.size():
+		for i in range(turret_angles.size()):
+			turret_angles[i] = lerp_angle(float(turret_angles[i]), float(_network_target_turret_angles[i]), min(1.0, delta * 16.0))
+	queue_redraw()
 
 func on_bubble_hit(idx: int) -> void:
 	if idx >= bubbles.size():

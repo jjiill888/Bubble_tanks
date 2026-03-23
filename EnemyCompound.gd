@@ -1,6 +1,10 @@
 extends Area2D
 
 @export var speed: float = 75.0
+var network_entity_id := 0
+var authority_simulation := true
+var _network_target_position := Vector2.ZERO
+var _has_network_target := false
 
 # 大泡泡
 const MED_POS      := Vector2(0.0, -4.0)
@@ -44,11 +48,15 @@ func _draw() -> void:
 	draw_circle(MED_POS + Vector2(10.5, -12.5), 3.5, Color(1.0, 1.0, 1.0, 0.14), true, -1.0, true)
 
 func _process(delta: float) -> void:
+	if not authority_simulation:
+		return
 	var scene: Node = get_tree().current_scene
-	var target: Vector2 = scene.get_player_position() if scene and scene.has_method("get_player_position") else get_viewport_rect().size * 0.5
+	var target_node: Node2D = scene.get_nearest_player_node(global_position) if scene and scene.has_method("get_nearest_player_node") else null
+	var target: Vector2 = target_node.global_position if is_instance_valid(target_node) else get_viewport_rect().size * 0.5
 	var to_target: Vector2 = target - global_position
 	if to_target.length_squared() < 30.0 * 30.0:
-		scene.take_damage(8)
+		var target_peer_id: int = scene.get_player_peer_id(target_node) if scene and scene.has_method("get_player_peer_id") else 1
+		scene.take_damage(8, target_peer_id)
 		queue_free()
 		return
 	global_position += to_target.normalized() * speed * delta
@@ -80,6 +88,69 @@ func on_bubble_destroyed(bubble: Area2D) -> void:
 			if scene and scene.has_method("play_enemy_death_sfx"):
 				scene.play_enemy_death_sfx()
 			queue_free()
+
+func hit_by_player_bullet(bullet_pos: Vector2, bullet_radius: float) -> bool:
+	var local_bullet_pos := to_local(bullet_pos)
+	if left_alive:
+		var left_reach := SM_R + bullet_radius
+		if local_bullet_pos.distance_squared_to(SM_LEFT) <= left_reach * left_reach:
+			var left_bubble := get_node_or_null("SmallBubbleLeft")
+			if left_bubble and left_bubble.has_method("die"):
+				left_bubble.die()
+				return true
+	if right_alive:
+		var right_reach := SM_R + bullet_radius
+		if local_bullet_pos.distance_squared_to(SM_RIGHT) <= right_reach * right_reach:
+			var right_bubble := get_node_or_null("SmallBubbleRight")
+			if right_bubble and right_bubble.has_method("die"):
+				right_bubble.die()
+				return true
+	var big_reach := MED_R + bullet_radius
+	if local_bullet_pos.distance_squared_to(MED_POS) > big_reach * big_reach:
+		return false
+	var big_bubble := get_node_or_null("BigBubble")
+	if big_bubble and big_bubble.has_method("die"):
+		big_bubble.die()
+		return true
+	return false
+
+func configure_network_entity(entity_id: int, authority: bool) -> void:
+	network_entity_id = entity_id
+	authority_simulation = authority
+	set_process(authority)
+
+func get_network_entity_state() -> Dictionary:
+	return {
+		"pos": global_position,
+		"left_alive": left_alive,
+		"right_alive": right_alive,
+		"big_damaged": big_damaged,
+	}
+
+func apply_network_entity_state(state: Dictionary) -> void:
+	_network_target_position = state.get("pos", global_position)
+	if not _has_network_target:
+		global_position = _network_target_position
+	_has_network_target = true
+	var next_left_alive := bool(state.get("left_alive", left_alive))
+	var next_right_alive := bool(state.get("right_alive", right_alive))
+	var next_big_damaged := bool(state.get("big_damaged", big_damaged))
+	var needs_redraw := next_left_alive != left_alive or next_right_alive != right_alive or next_big_damaged != big_damaged
+	left_alive = next_left_alive
+	right_alive = next_right_alive
+	big_damaged = next_big_damaged
+	if needs_redraw:
+		queue_redraw()
+
+func tick_network_interpolation(delta: float) -> void:
+	if authority_simulation or not _has_network_target:
+		return
+	var dist_sq := global_position.distance_squared_to(_network_target_position)
+	if dist_sq > 220.0 * 220.0:
+		global_position = _network_target_position
+		return
+	var blend: float = min(1.0, delta * 10.0)
+	global_position = global_position.lerp(_network_target_position, blend)
 
 func _on_screen_exited() -> void:
 	_cleanup_if_outside_bounds()

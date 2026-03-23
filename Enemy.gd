@@ -1,6 +1,10 @@
 extends Area2D
 
 @export var speed: float = 120.0
+var network_entity_id := 0
+var authority_simulation := true
+var _network_target_position := Vector2.ZERO
+var _has_network_target := false
 
 const RADIUS       := 20.0
 const NUC_OFFSET   := Vector2(-5.0, -4.0)
@@ -25,11 +29,15 @@ func _draw() -> void:
 	draw_circle(HL_OFFSET + Vector2(1.5, 1.0), HL_RADIUS * 0.5, Color(1.0, 1.0, 1.0, 0.14), true, -1.0, true)
 
 func _process(delta: float) -> void:
+	if not authority_simulation:
+		return
 	var scene: Node = get_tree().current_scene
-	var target: Vector2 = scene.get_player_position() if scene and scene.has_method("get_player_position") else get_viewport_rect().size * 0.5
+	var target_node: Node2D = scene.get_nearest_player_node(global_position) if scene and scene.has_method("get_nearest_player_node") else null
+	var target: Vector2 = target_node.global_position if is_instance_valid(target_node) else get_viewport_rect().size * 0.5
 	var to_target: Vector2 = target - global_position
 	if to_target.length_squared() < 22.0 * 22.0:
-		scene.take_damage(5)
+		var target_peer_id: int = scene.get_player_peer_id(target_node) if scene and scene.has_method("get_player_peer_id") else 1
+		scene.take_damage(5, target_peer_id)
 		queue_free()
 		return
 	global_position += to_target.normalized() * speed * delta
@@ -46,6 +54,39 @@ func die() -> void:
 	if scene and scene.has_method("play_enemy_death_sfx"):
 		scene.play_enemy_death_sfx()
 	queue_free()
+
+func configure_network_entity(entity_id: int, authority: bool) -> void:
+	network_entity_id = entity_id
+	authority_simulation = authority
+	set_process(authority)
+
+func get_network_entity_state() -> Dictionary:
+	return {
+		"pos": global_position,
+	}
+
+func apply_network_entity_state(state: Dictionary) -> void:
+	_network_target_position = state.get("pos", global_position)
+	if not _has_network_target:
+		global_position = _network_target_position
+	_has_network_target = true
+
+func tick_network_interpolation(delta: float) -> void:
+	if authority_simulation or not _has_network_target:
+		return
+	var dist_sq := global_position.distance_squared_to(_network_target_position)
+	if dist_sq > 180.0 * 180.0:
+		global_position = _network_target_position
+		return
+	var blend: float = min(1.0, delta * 12.0)
+	global_position = global_position.lerp(_network_target_position, blend)
+
+func hit_by_player_bullet(bullet_pos: Vector2, bullet_radius: float) -> bool:
+	var reach := RADIUS + bullet_radius
+	if global_position.distance_squared_to(bullet_pos) > reach * reach:
+		return false
+	die()
+	return true
 
 func _on_screen_exited() -> void:
 	_cleanup_if_outside_bounds()
