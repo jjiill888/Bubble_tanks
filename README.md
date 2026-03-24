@@ -30,7 +30,7 @@
 
 ## 当前版本
 
-- `0.0.10`
+- `0.0.11`
 
 ## 运行方式
 
@@ -72,6 +72,6 @@
 ### 发布步骤
 
 1. 确认 `version.json` 里的版本号。
-2. 推送 tag，例如 `0.0.10`。
+2. 推送 tag，例如 `0.0.11`。
 3. GitHub Actions 自动导出四个平台包、生成 manifest 并发布 Release。
 4. 客户端下一次启动会读取 GitHub Pages 上的 `manifest.json` 检查更新。
