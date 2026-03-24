@@ -89,14 +89,7 @@ func _build_ui() -> void:
 	_panel.visible = false
 	_panel.process_mode = Node.PROCESS_MODE_ALWAYS
 	_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	_panel.anchor_left = 1.0
-	_panel.anchor_right = 1.0
-	_panel.anchor_top = 1.0
-	_panel.anchor_bottom = 1.0
-	_panel.offset_left = -PANEL_WIDTH - 20.0
-	_panel.offset_right = -20.0
-	_panel.offset_top = -PANEL_HEIGHT - 20.0
-	_panel.offset_bottom = -20.0
+	_panel.custom_minimum_size = Vector2(PANEL_WIDTH, 0.0)
 	add_child(_panel)
 
 	var root := VBoxContainer.new()
@@ -153,14 +146,7 @@ func _build_ui() -> void:
 	_toast_panel.visible = false
 	_toast_panel.process_mode = Node.PROCESS_MODE_ALWAYS
 	_toast_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_toast_panel.anchor_left = 1.0
-	_toast_panel.anchor_right = 1.0
-	_toast_panel.anchor_top = 1.0
-	_toast_panel.anchor_bottom = 1.0
-	_toast_panel.offset_left = -TOAST_WIDTH - 20.0
-	_toast_panel.offset_right = -20.0
-	_toast_panel.offset_top = -TOAST_HEIGHT - 20.0
-	_toast_panel.offset_bottom = -20.0
+	_toast_panel.custom_minimum_size = Vector2(TOAST_WIDTH, 0.0)
 	add_child(_toast_panel)
 
 	var toast_root := VBoxContainer.new()
@@ -182,8 +168,17 @@ func _build_ui() -> void:
 	_toast_timer.timeout.connect(_on_toast_timeout)
 	add_child(_toast_timer)
 
+func _reposition_panels() -> void:
+	var vp := get_viewport().get_visible_rect()
+	if _panel != null:
+		_panel.position = Vector2(vp.size.x - _panel.size.x - 20.0, vp.size.y - _panel.size.y - 20.0)
+	if _toast_panel != null:
+		_toast_panel.position = Vector2(vp.size.x - _toast_panel.size.x - 20.0, vp.size.y - _toast_panel.size.y - 20.0)
+
 func _set_prompt_visible(visible: bool) -> void:
 	if _panel != null:
+		if visible:
+			_reposition_panels()
 		_panel.visible = visible
 	if visible:
 		_hide_toast()
@@ -214,6 +209,7 @@ func _show_toast(summary: String, details: String = "", duration: float = TOAST_
 	_toast_summary_label.text = summary
 	_toast_details_label.text = details
 	_toast_details_label.visible = not details.is_empty()
+	_reposition_panels()
 	_toast_panel.visible = true
 	_toast_timer.stop()
 	_toast_timer.start(maxf(duration, 0.1))
