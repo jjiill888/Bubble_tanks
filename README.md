@@ -22,7 +22,7 @@
 
 - Godot 本地缓存目录 `.godot/`
 - Python 虚拟环境 `.venv/`
-- Web/本地导出产物，例如 `Bubble tanks.html`、`Bubble tanks.wasm`、`Bubble tanks.pck`
+- 导出产物，例如网页导出文件或平台二进制包
 
 ## 运行环境
 

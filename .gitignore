@@ -10,11 +10,11 @@
 .DS_Store
 Thumbs.db
 
-# Godot export artifacts kept out of source control
-Bubble tanks.html
-Bubble tanks.js
-Bubble tanks.wasm
-Bubble tanks.pck
-Bubble tanks.sh
-Bubble tanks.audio.worklet.js
-Bubble tanks.audio.position.worklet.js
+# Local native export artifacts
+/Bubble tanks.sh
+/Bubble tanks.x86_64
+/Bubble tanks.Arm64
+/Bubble tanks.exe
+/Bubble tanks_x86_64.exe
+/Bubble tanks_Arm64.exe
+
