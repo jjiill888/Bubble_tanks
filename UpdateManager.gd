@@ -196,13 +196,20 @@ func _get_platform_key() -> String:
 		return "linux-%s" % architecture
 	return ""
 
+func _build_manifest_request_url() -> String:
+	var manifest_url := String(_version_info.get("manifest_url", "")).strip_edges()
+	if manifest_url.is_empty():
+		return ""
+	var separator := "&" if manifest_url.contains("?") else "?"
+	return "%s%scb=%d" % [manifest_url, separator, int(Time.get_unix_time_from_system())]
+
 func _check_for_updates() -> void:
 	if not _can_run_update_flow() or _manifest_http == null:
 		print("%s skipped update check; enabled=%s http_ready=%s" % [UPDATE_LOG_PREFIX, _can_run_update_flow(), _manifest_http != null])
 		return
 	_status = "checking"
 	var headers := PackedStringArray(["Accept: application/json", "Cache-Control: no-cache"])
-	var manifest_url := String(_version_info.get("manifest_url", "")).strip_edges()
+	var manifest_url := _build_manifest_request_url()
 	print("%s checking manifest %s" % [UPDATE_LOG_PREFIX, manifest_url])
 	var err := _manifest_http.request(manifest_url, headers, HTTPClient.METHOD_GET)
 	if err != OK:
