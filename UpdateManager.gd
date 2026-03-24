@@ -24,6 +24,7 @@ var _last_sample_bytes := 0
 var _download_speed_bytes_per_second := 0.0
 var _download_total_bytes := 0
 var _status := "idle"
+var _show_no_update_feedback := false
 
 var _manifest_http: HTTPRequest = null
 var _download_http: HTTPRequest = null
@@ -81,12 +82,12 @@ func _build_ui() -> void:
 	_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	_panel.anchor_left = 1.0
 	_panel.anchor_right = 1.0
-	_panel.anchor_top = 0.0
-	_panel.anchor_bottom = 0.0
+	_panel.anchor_top = 1.0
+	_panel.anchor_bottom = 1.0
 	_panel.offset_left = -PANEL_WIDTH - 20.0
 	_panel.offset_right = -20.0
-	_panel.offset_top = 20.0
-	_panel.offset_bottom = 20.0 + PANEL_HEIGHT
+	_panel.offset_top = -PANEL_HEIGHT - 20.0
+	_panel.offset_bottom = -20.0
 	add_child(_panel)
 
 	var root := VBoxContainer.new()
@@ -138,6 +139,34 @@ func _build_ui() -> void:
 	_skip_button.text = "跳过此版本"
 	_skip_button.pressed.connect(_on_skip_pressed)
 	action_row.add_child(_skip_button)
+
+func _set_prompt_visible(visible: bool) -> void:
+	if _panel != null:
+		_panel.visible = visible
+
+func request_manual_update_check() -> void:
+	if not _can_run_update_flow():
+		_show_manual_status("更新功能当前不可用。", "请确认当前运行的是发布包，而不是编辑器。")
+		return
+	_show_no_update_feedback = true
+	_check_for_updates()
+
+func get_update_channel_label() -> String:
+	return "Nightly 渠道" if get_update_channel() == "night" else "Stable 渠道"
+
+func _show_manual_status(summary: String, details: String = "") -> void:
+	_status = "idle"
+	_title_label.text = "更新检查"
+	_summary_label.text = summary
+	_details_label.text = details
+	_progress_bar.visible = false
+	_progress_label.visible = false
+	_primary_button.text = "知道了"
+	_primary_button.disabled = false
+	_secondary_button.text = "关闭"
+	_secondary_button.disabled = false
+	_skip_button.visible = false
+	_set_prompt_visible(true)
 
 func _setup_http_nodes() -> void:
 	_manifest_http = HTTPRequest.new()
@@ -238,21 +267,36 @@ func _on_manifest_request_completed(result: int, response_code: int, _headers: P
 	print("%s manifest completed result=%s code=%s bytes=%s" % [UPDATE_LOG_PREFIX, result, response_code, body.size()])
 	if result != HTTPRequest.RESULT_SUCCESS or response_code < 200 or response_code >= 300:
 		print("%s manifest request did not succeed" % UPDATE_LOG_PREFIX)
+		if _show_no_update_feedback:
+			_show_no_update_feedback = false
+			_show_manual_status("无法检查更新。", "请稍后重试，或直接前往发布页下载。")
 		return
 	var parsed = JSON.parse_string(body.get_string_from_utf8())
 	if typeof(parsed) != TYPE_DICTIONARY:
 		print("%s manifest JSON parse failed" % UPDATE_LOG_PREFIX)
+		if _show_no_update_feedback:
+			_show_no_update_feedback = false
+			_show_manual_status("更新数据解析失败。", "请稍后重试。")
 		return
 	_remote_manifest = parsed
 	_latest_version = String(_remote_manifest.get("latest_version", "")).strip_edges()
 	print("%s latest=%s local=%s" % [UPDATE_LOG_PREFIX, _latest_version, String(_version_info.get("version", "0.0.0"))])
 	if _latest_version.is_empty():
+		if _show_no_update_feedback:
+			_show_no_update_feedback = false
+			_show_manual_status("暂时没有可用更新信息。")
 		return
 	if _compare_versions(_latest_version, String(_version_info.get("version", "0.0.0"))) <= 0:
 		print("%s no newer version available" % UPDATE_LOG_PREFIX)
+		if _show_no_update_feedback:
+			_show_no_update_feedback = false
+			_show_manual_status("当前已经是最新版本。", "当前版本 %s" % String(_version_info.get("version", "0.0.0")))
 		return
 	if String(_state.get("skipped_version", "")) == _latest_version:
 		print("%s latest version previously skipped" % UPDATE_LOG_PREFIX)
+		if _show_no_update_feedback:
+			_show_no_update_feedback = false
+			_show_manual_status("这个版本之前已被跳过。", "如需再次提醒，可切换渠道或等待下一个版本。")
 		return
 	var channels: Dictionary = _remote_manifest.get("channels", {})
 	var channel_name := get_update_channel()
@@ -260,8 +304,12 @@ func _on_manifest_request_completed(result: int, response_code: int, _headers: P
 	_remote_package = channel_manifest.get(_get_platform_key(), {})
 	if _remote_package.is_empty():
 		print("%s missing package for channel=%s platform=%s" % [UPDATE_LOG_PREFIX, channel_name, _get_platform_key()])
+		if _show_no_update_feedback:
+			_show_no_update_feedback = false
+			_show_manual_status("当前渠道没有适用于本机的更新包。", get_update_channel_label())
 		return
 	print("%s update available package=%s" % [UPDATE_LOG_PREFIX, JSON.stringify(_remote_package)])
+	_show_no_update_feedback = false
 	_show_update_prompt()
 
 func get_update_channel() -> String:
@@ -279,7 +327,7 @@ func toggle_update_channel() -> String:
 	emit_signal("update_channel_changed", next_channel)
 	if _can_run_update_flow():
 		_remote_package.clear()
-		_panel.visible = false
+		_set_prompt_visible(false)
 		_check_for_updates()
 	return next_channel
 
@@ -306,9 +354,12 @@ func _show_update_prompt() -> void:
 	_secondary_button.disabled = false
 	_skip_button.visible = true
 	_skip_button.disabled = false
-	_panel.visible = true
+	_set_prompt_visible(true)
 
 func _on_primary_pressed() -> void:
+	if _primary_button.text == "知道了":
+		_set_prompt_visible(false)
+		return
 	if _status == "downloading":
 		return
 	_start_download()
@@ -316,12 +367,12 @@ func _on_primary_pressed() -> void:
 func _on_secondary_pressed() -> void:
 	if _status == "downloading":
 		_cancel_download()
-	_panel.visible = false
+	_set_prompt_visible(false)
 
 func _on_skip_pressed() -> void:
 	_state["skipped_version"] = _latest_version
 	_save_state()
-	_panel.visible = false
+	_set_prompt_visible(false)
 
 func _start_download() -> void:
 	var url := String(_remote_package.get("url", "")).strip_edges()
@@ -461,7 +512,7 @@ func _show_error(message: String) -> void:
 	_secondary_button.text = "稍后提醒"
 	_skip_button.visible = true
 	_skip_button.disabled = false
-	_panel.visible = true
+	_set_prompt_visible(true)
 
 func _format_bytes(value: int) -> String:
 	var units := ["B", "KB", "MB", "GB"]

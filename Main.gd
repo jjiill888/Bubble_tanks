@@ -149,6 +149,7 @@ var _bgm_mix_tween: Tween = null
 var _network_menu_button: Button = null
 var _audio_menu_button: Button = null
 var _update_channel_button: Button = null
+var _check_update_button: Button = null
 var _network_panel: PanelContainer = null
 var _audio_panel: PanelContainer = null
 var _network_status_label: Label = null
@@ -207,6 +208,7 @@ func _is_reserved_intro_ui_event(event: InputEvent) -> bool:
 	return _is_control_hit(_network_menu_button, point) \
 			or _is_control_hit(_audio_menu_button, point) \
 			or _is_control_hit(_update_channel_button, point) \
+			or _is_control_hit(_check_update_button, point) \
 			or _is_control_hit(_network_panel, point) \
 			or _is_control_hit(_audio_panel, point)
 
@@ -322,18 +324,26 @@ func _get_current_update_channel() -> String:
 		return String(_update_manager.call("get_update_channel"))
 	return "stable"
 
+func _get_current_update_channel_label() -> String:
+	if _update_manager != null and is_instance_valid(_update_manager) and _update_manager.has_method("get_update_channel_label"):
+		return String(_update_manager.call("get_update_channel_label"))
+	return "Stable 渠道"
+
 func _refresh_update_channel_button() -> void:
 	if _update_channel_button == null:
 		return
-	var channel := _get_current_update_channel()
-	var channel_label := "Night" if channel == "night" else "Stable"
-	_update_channel_button.text = "更新: %s" % channel_label
+	_update_channel_button.text = _get_current_update_channel_label()
 
 func _toggle_update_channel() -> void:
 	if _update_manager == null or not is_instance_valid(_update_manager) or not _update_manager.has_method("toggle_update_channel"):
 		return
 	_update_manager.call("toggle_update_channel")
 	_refresh_update_channel_button()
+
+func _request_manual_update_check() -> void:
+	if _update_manager == null or not is_instance_valid(_update_manager) or not _update_manager.has_method("request_manual_update_check"):
+		return
+	_update_manager.call("request_manual_update_check")
 
 func _on_update_channel_changed(_channel: String) -> void:
 	_refresh_update_channel_button()
@@ -1515,14 +1525,14 @@ func _setup_network_ui() -> void:
 	_audio_menu_button.anchor_bottom = 1.0
 	_audio_menu_button.offset_left = -150.0
 	_audio_menu_button.offset_right = -20.0
-	_audio_menu_button.offset_top = -120.0
-	_audio_menu_button.offset_bottom = -70.0
+	_audio_menu_button.offset_top = -170.0
+	_audio_menu_button.offset_bottom = -120.0
 	_audio_menu_button.pressed.connect(_toggle_audio_panel)
 	$CanvasLayer.add_child(_audio_menu_button)
 
 	_update_channel_button = Button.new()
 	_update_channel_button.name = "UpdateChannelButton"
-	_update_channel_button.text = "更新: Stable"
+	_update_channel_button.text = "Stable 渠道"
 	_update_channel_button.visible = false
 	_update_channel_button.process_mode = Node.PROCESS_MODE_ALWAYS
 	_update_channel_button.anchor_left = 1.0
@@ -1531,11 +1541,27 @@ func _setup_network_ui() -> void:
 	_update_channel_button.anchor_bottom = 1.0
 	_update_channel_button.offset_left = -150.0
 	_update_channel_button.offset_right = -20.0
-	_update_channel_button.offset_top = -170.0
-	_update_channel_button.offset_bottom = -120.0
+	_update_channel_button.offset_top = -270.0
+	_update_channel_button.offset_bottom = -220.0
 	_update_channel_button.pressed.connect(_toggle_update_channel)
 	$CanvasLayer.add_child(_update_channel_button)
 	_refresh_update_channel_button()
+
+	_check_update_button = Button.new()
+	_check_update_button.name = "CheckUpdateButton"
+	_check_update_button.text = "检查更新"
+	_check_update_button.visible = false
+	_check_update_button.process_mode = Node.PROCESS_MODE_ALWAYS
+	_check_update_button.anchor_left = 1.0
+	_check_update_button.anchor_right = 1.0
+	_check_update_button.anchor_top = 1.0
+	_check_update_button.anchor_bottom = 1.0
+	_check_update_button.offset_left = -150.0
+	_check_update_button.offset_right = -20.0
+	_check_update_button.offset_top = -220.0
+	_check_update_button.offset_bottom = -170.0
+	_check_update_button.pressed.connect(_request_manual_update_check)
+	$CanvasLayer.add_child(_check_update_button)
 
 	_network_panel = PanelContainer.new()
 	_network_panel.name = "NetworkPanel"
@@ -1704,6 +1730,8 @@ func _update_network_pause_ui_visibility() -> void:
 		_audio_menu_button.visible = should_show
 	if _update_channel_button != null:
 		_update_channel_button.visible = should_show
+	if _check_update_button != null:
+		_check_update_button.visible = should_show
 	if not should_show and _network_panel != null:
 		_network_panel.visible = false
 	if not should_show and _audio_panel != null:
