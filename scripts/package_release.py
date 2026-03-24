@@ -24,7 +24,7 @@ class Target:
     key: str
     source_path: Path
     executable_name: str
-    archive_name: str
+    archive_prefix: str
     archive_kind: str
     updater_script: Path
 
@@ -34,7 +34,7 @@ TARGETS = [
         key="windows-x64",
         source_path=EXPORT_DIR / "windows-x64" / "BubbleTanks.exe",
         executable_name="BubbleTanks.exe",
-        archive_name="bubble-tanks-windows-x64.zip",
+        archive_prefix="bubble-tanks-windows-x64",
         archive_kind="zip",
         updater_script=ROOT / "updater" / "install_update.ps1",
     ),
@@ -42,7 +42,7 @@ TARGETS = [
         key="windows-arm64",
         source_path=EXPORT_DIR / "windows-arm64" / "BubbleTanks.exe",
         executable_name="BubbleTanks.exe",
-        archive_name="bubble-tanks-windows-arm64.zip",
+        archive_prefix="bubble-tanks-windows-arm64",
         archive_kind="zip",
         updater_script=ROOT / "updater" / "install_update.ps1",
     ),
@@ -50,7 +50,7 @@ TARGETS = [
         key="linux-x64",
         source_path=EXPORT_DIR / "linux-x64" / "BubbleTanks.x86_64",
         executable_name="BubbleTanks.x86_64",
-        archive_name="bubble-tanks-linux-x64.tar.gz",
+        archive_prefix="bubble-tanks-linux-x64",
         archive_kind="tar.gz",
         updater_script=ROOT / "updater" / "install_update.sh",
     ),
@@ -58,7 +58,7 @@ TARGETS = [
         key="linux-arm64",
         source_path=EXPORT_DIR / "linux-arm64" / "BubbleTanks.arm64",
         executable_name="BubbleTanks.arm64",
-        archive_name="bubble-tanks-linux-arm64.tar.gz",
+        archive_prefix="bubble-tanks-linux-arm64",
         archive_kind="tar.gz",
         updater_script=ROOT / "updater" / "install_update.sh",
     ),
@@ -117,13 +117,13 @@ def write_zip_archive(source_dir: Path, destination: Path) -> None:
         for path in sorted(source_dir.rglob("*")):
             if path.is_dir():
                 continue
-            archive.write(path, path.relative_to(source_dir))
+            archive.write(path, Path(source_dir.name) / path.relative_to(source_dir))
 
 
 def write_tar_gz_archive(source_dir: Path, destination: Path) -> None:
     with tarfile.open(destination, "w:gz") as archive:
         for path in sorted(source_dir.rglob("*")):
-            archive.add(path, arcname=path.relative_to(source_dir))
+            archive.add(path, arcname=Path(source_dir.name) / path.relative_to(source_dir))
 
 
 def set_executable(path: Path) -> None:
@@ -135,7 +135,9 @@ def package_target(target: Target, rendered_version: dict) -> dict:
     if not target.source_path.exists():
         raise FileNotFoundError(f"Missing exported binary for {target.key}: {target.source_path}")
 
-    package_dir = DIST_DIR / target.key
+    version = str(rendered_version["version"])
+    package_stem = f"{target.archive_prefix}.{version}"
+    package_dir = DIST_DIR / package_stem
     package_updater_dir = package_dir / "updater"
     package_updater_dir.mkdir(parents=True, exist_ok=True)
 
@@ -150,7 +152,8 @@ def package_target(target: Target, rendered_version: dict) -> dict:
         set_executable(executable_destination)
         set_executable(package_updater_dir / target.updater_script.name)
 
-    archive_path = DIST_DIR / target.archive_name
+    archive_suffix = ".zip" if target.archive_kind == "zip" else ".tar.gz"
+    archive_path = DIST_DIR / f"{package_stem}{archive_suffix}"
     if target.archive_kind == "zip":
         write_zip_archive(package_dir, archive_path)
     else:
