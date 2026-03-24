@@ -34,7 +34,7 @@ fi
 
 EXTRACT_DIR="$TMP_ROOT/payload"
 mkdir -p "$EXTRACT_DIR"
-tar -xzf "$PACKAGE_PATH" -C "$EXTRACT_DIR" --strip-components=1
+tar -xzf "$PACKAGE_PATH" -C "$EXTRACT_DIR"
 
 if [ -f "$EXTRACT_DIR/$EXECUTABLE_NAME" ]; then
   chmod +x "$EXTRACT_DIR/$EXECUTABLE_NAME"

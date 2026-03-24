@@ -31,9 +31,7 @@ try {
     }
 
     Expand-Archive -LiteralPath $PackagePath -DestinationPath $extractDir -Force
-    $subdirs = @(Get-ChildItem -LiteralPath $extractDir -Directory)
-    $sourceDir = if ($subdirs.Count -eq 1) { $subdirs[0].FullName } else { $extractDir }
-    $null = robocopy $sourceDir $InstallDir /E /R:2 /W:1 /NFL /NDL /NJH /NJS /NP
+    $null = robocopy $extractDir $InstallDir /E /R:2 /W:1 /NFL /NDL /NJH /NJS /NP
     if ($LASTEXITCODE -ge 8) {
         throw "robocopy failed with exit code $LASTEXITCODE"
     }

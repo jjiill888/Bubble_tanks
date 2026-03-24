@@ -120,13 +120,13 @@ def write_zip_archive(source_dir: Path, destination: Path) -> None:
         for path in sorted(source_dir.rglob("*")):
             if path.is_dir():
                 continue
-            archive.write(path, Path(source_dir.name) / path.relative_to(source_dir))
+            archive.write(path, path.relative_to(source_dir))
 
 
 def write_tar_gz_archive(source_dir: Path, destination: Path) -> None:
     with tarfile.open(destination, "w:gz") as archive:
         for path in sorted(source_dir.rglob("*")):
-            archive.add(path, arcname=Path(source_dir.name) / path.relative_to(source_dir))
+            archive.add(path, arcname=path.relative_to(source_dir))
 
 
 def set_executable(path: Path) -> None:
