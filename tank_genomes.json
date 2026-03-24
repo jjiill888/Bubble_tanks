@@ -1,0 +1,938 @@
+[
+  {
+    "id": 1,
+    "fitness": 0.9936,
+    "genome": {
+      "core_radius": 26.24,
+      "rim_thickness": 1.5,
+      "core_color": [
+        0.98,
+        0.48,
+        0.2,
+        0.78
+      ],
+      "rim_color": [
+        0.7,
+        0.18,
+        0.1,
+        0.95
+      ],
+      "nucleus_offset": [
+        -4.41,
+        -6.37
+      ],
+      "nucleus_radius": 8.21,
+      "highlight_offset": [
+        8.22,
+        5.23
+      ],
+      "highlight_radius": 7.06,
+      "lobes": [
+        {
+          "angle": 0.0313,
+          "distance": 7.34,
+          "radius": 11.53
+        },
+        {
+          "angle": 1.6417,
+          "distance": 22.88,
+          "radius": 14.84
+        },
+        {
+          "angle": 3.1698,
+          "distance": 8.94,
+          "radius": 8.99
+        },
+        {
+          "angle": 4.7548,
+          "distance": 16.52,
+          "radius": 10.3
+        }
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "fitness": 0.9932,
+    "genome": {
+      "core_radius": 26.24,
+      "rim_thickness": 1.5,
+      "core_color": [
+        0.98,
+        0.48,
+        0.2,
+        0.78
+      ],
+      "rim_color": [
+        0.7,
+        0.18,
+        0.1,
+        0.95
+      ],
+      "nucleus_offset": [
+        -4.41,
+        -6.37
+      ],
+      "nucleus_radius": 8.21,
+      "highlight_offset": [
+        8.22,
+        5.23
+      ],
+      "highlight_radius": 7.06,
+      "lobes": [
+        {
+          "angle": 0.0313,
+          "distance": 7.34,
+          "radius": 11.53
+        },
+        {
+          "angle": 1.6417,
+          "distance": 22.88,
+          "radius": 14.84
+        },
+        {
+          "angle": 3.1698,
+          "distance": 7.51,
+          "radius": 8.99
+        },
+        {
+          "angle": 4.7548,
+          "distance": 16.52,
+          "radius": 9.32
+        }
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "fitness": 0.9908,
+    "genome": {
+      "core_radius": 26.0,
+      "rim_thickness": 1.84,
+      "core_color": [
+        0.98,
+        0.48,
+        0.2,
+        0.78
+      ],
+      "rim_color": [
+        0.58,
+        0.1,
+        0.14,
+        0.95
+      ],
+      "nucleus_offset": [
+        -4.41,
+        -6.37
+      ],
+      "nucleus_radius": 8.21,
+      "highlight_offset": [
+        8.22,
+        5.23
+      ],
+      "highlight_radius": 7.05,
+      "lobes": [
+        {
+          "angle": 0.2944,
+          "distance": 7.7,
+          "radius": 10.54
+        },
+        {
+          "angle": 1.8385,
+          "distance": 23.4,
+          "radius": 14.24
+        },
+        {
+          "angle": 3.3347,
+          "distance": 9.61,
+          "radius": 7.4
+        },
+        {
+          "angle": 4.9687,
+          "distance": 19.24,
+          "radius": 11.29
+        }
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "fitness": 0.9898,
+    "genome": {
+      "core_radius": 26.13,
+      "rim_thickness": 1.66,
+      "core_color": [
+        0.98,
+        0.48,
+        0.2,
+        0.78
+      ],
+      "rim_color": [
+        0.7,
+        0.18,
+        0.1,
+        0.95
+      ],
+      "nucleus_offset": [
+        -4.41,
+        -6.37
+      ],
+      "nucleus_radius": 8.22,
+      "highlight_offset": [
+        8.22,
+        5.23
+      ],
+      "highlight_radius": 7.06,
+      "lobes": [
+        {
+          "angle": 0.0927,
+          "distance": 8.2,
+          "radius": 11.71
+        },
+        {
+          "angle": 1.6117,
+          "distance": 23.52,
+          "radius": 15.0
+        },
+        {
+          "angle": 3.1641,
+          "distance": 6.53,
+          "radius": 9.75
+        },
+        {
+          "angle": 4.8068,
+          "distance": 13.64,
+          "radius": 9.62
+        }
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "fitness": 0.9898,
+    "genome": {
+      "core_radius": 26.0,
+      "rim_thickness": 1.84,
+      "core_color": [
+        0.98,
+        0.48,
+        0.2,
+        0.78
+      ],
+      "rim_color": [
+        0.58,
+        0.1,
+        0.14,
+        0.95
+      ],
+      "nucleus_offset": [
+        -4.41,
+        -6.37
+      ],
+      "nucleus_radius": 8.21,
+      "highlight_offset": [
+        8.22,
+        5.23
+      ],
+      "highlight_radius": 7.05,
+      "lobes": [
+        {
+          "angle": 0.2944,
+          "distance": 7.23,
+          "radius": 10.54
+        },
+        {
+          "angle": 1.8385,
+          "distance": 23.4,
+          "radius": 14.24
+        },
+        {
+          "angle": 3.4322,
+          "distance": 9.61,
+          "radius": 7.4
+        },
+        {
+          "angle": 4.9209,
+          "distance": 19.24,
+          "radius": 12.53
+        }
+      ]
+    }
+  },
+  {
+    "id": 6,
+    "fitness": 0.9897,
+    "genome": {
+      "core_radius": 26.79,
+      "rim_thickness": 1.66,
+      "core_color": [
+        0.98,
+        0.48,
+        0.2,
+        0.78
+      ],
+      "rim_color": [
+        0.7,
+        0.18,
+        0.1,
+        0.95
+      ],
+      "nucleus_offset": [
+        -4.41,
+        -6.37
+      ],
+      "nucleus_radius": 8.22,
+      "highlight_offset": [
+        8.22,
+        5.23
+      ],
+      "highlight_radius": 7.06,
+      "lobes": [
+        {
+          "angle": 0.0545,
+          "distance": 8.78,
+          "radius": 11.84
+        },
+        {
+          "angle": 1.6284,
+          "distance": 22.65,
+          "radius": 15.0
+        },
+        {
+          "angle": 3.1984,
+          "distance": 7.8,
+          "radius": 9.56
+        },
+        {
+          "angle": 4.777,
+          "distance": 13.73,
+          "radius": 9.32
+        }
+      ]
+    }
+  },
+  {
+    "id": 7,
+    "fitness": 0.9896,
+    "genome": {
+      "core_radius": 25.91,
+      "rim_thickness": 1.79,
+      "core_color": [
+        0.98,
+        0.48,
+        0.2,
+        0.78
+      ],
+      "rim_color": [
+        0.7,
+        0.18,
+        0.1,
+        0.95
+      ],
+      "nucleus_offset": [
+        -4.41,
+        -6.37
+      ],
+      "nucleus_radius": 8.21,
+      "highlight_offset": [
+        8.22,
+        5.23
+      ],
+      "highlight_radius": 7.06,
+      "lobes": [
+        {
+          "angle": 0.0504,
+          "distance": 5.23,
+          "radius": 11.46
+        },
+        {
+          "angle": 1.6334,
+          "distance": 23.32,
+          "radius": 13.77
+        },
+        {
+          "angle": 3.1318,
+          "distance": 8.3,
+          "radius": 9.09
+        },
+        {
+          "angle": 4.7697,
+          "distance": 14.38,
+          "radius": 12.47
+        }
+      ]
+    }
+  },
+  {
+    "id": 8,
+    "fitness": 0.9893,
+    "genome": {
+      "core_radius": 24.0,
+      "rim_thickness": 1.62,
+      "core_color": [
+        0.98,
+        0.48,
+        0.2,
+        0.78
+      ],
+      "rim_color": [
+        0.58,
+        0.1,
+        0.14,
+        0.95
+      ],
+      "nucleus_offset": [
+        -4.41,
+        -6.37
+      ],
+      "nucleus_radius": 8.21,
+      "highlight_offset": [
+        8.22,
+        5.23
+      ],
+      "highlight_radius": 7.06,
+      "lobes": [
+        {
+          "angle": 0.2078,
+          "distance": 8.26,
+          "radius": 10.06
+        },
+        {
+          "angle": 1.7889,
+          "distance": 21.6,
+          "radius": 13.36
+        },
+        {
+          "angle": 3.3075,
+          "distance": 8.16,
+          "radius": 6.45
+        },
+        {
+          "angle": 4.8848,
+          "distance": 14.49,
+          "radius": 11.11
+        }
+      ]
+    }
+  },
+  {
+    "id": 9,
+    "fitness": 0.9889,
+    "genome": {
+      "core_radius": 27.62,
+      "rim_thickness": 1.87,
+      "core_color": [
+        0.98,
+        0.48,
+        0.2,
+        0.78
+      ],
+      "rim_color": [
+        0.58,
+        0.1,
+        0.14,
+        0.95
+      ],
+      "nucleus_offset": [
+        -4.41,
+        -6.37
+      ],
+      "nucleus_radius": 8.21,
+      "highlight_offset": [
+        8.22,
+        5.23
+      ],
+      "highlight_radius": 7.05,
+      "lobes": [
+        {
+          "angle": 0.243,
+          "distance": 8.68,
+          "radius": 10.95
+        },
+        {
+          "angle": 1.7974,
+          "distance": 24.06,
+          "radius": 15.0
+        },
+        {
+          "angle": 3.3472,
+          "distance": 4.23,
+          "radius": 7.6
+        },
+        {
+          "angle": 4.9556,
+          "distance": 17.5,
+          "radius": 10.49
+        }
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "fitness": 0.9889,
+    "genome": {
+      "core_radius": 25.55,
+      "rim_thickness": 1.5,
+      "core_color": [
+        0.98,
+        0.48,
+        0.2,
+        0.78
+      ],
+      "rim_color": [
+        0.7,
+        0.18,
+        0.1,
+        0.95
+      ],
+      "nucleus_offset": [
+        -4.41,
+        -6.37
+      ],
+      "nucleus_radius": 8.21,
+      "highlight_offset": [
+        8.22,
+        5.23
+      ],
+      "highlight_radius": 7.05,
+      "lobes": [
+        {
+          "angle": 6.22,
+          "distance": 8.52,
+          "radius": 11.18
+        },
+        {
+          "angle": 1.5072,
+          "distance": 22.99,
+          "radius": 13.68
+        },
+        {
+          "angle": 2.9935,
+          "distance": 8.98,
+          "radius": 7.75
+        },
+        {
+          "angle": 4.5522,
+          "distance": 14.96,
+          "radius": 13.37
+        }
+      ]
+    }
+  },
+  {
+    "id": 11,
+    "fitness": 0.9878,
+    "genome": {
+      "core_radius": 25.55,
+      "rim_thickness": 1.61,
+      "core_color": [
+        0.98,
+        0.48,
+        0.2,
+        0.78
+      ],
+      "rim_color": [
+        0.7,
+        0.18,
+        0.1,
+        0.95
+      ],
+      "nucleus_offset": [
+        -4.41,
+        -6.37
+      ],
+      "nucleus_radius": 8.21,
+      "highlight_offset": [
+        8.22,
+        5.23
+      ],
+      "highlight_radius": 7.05,
+      "lobes": [
+        {
+          "angle": 6.22,
+          "distance": 9.76,
+          "radius": 11.18
+        },
+        {
+          "angle": 1.5072,
+          "distance": 22.99,
+          "radius": 14.87
+        },
+        {
+          "angle": 2.9935,
+          "distance": 8.98,
+          "radius": 8.56
+        },
+        {
+          "angle": 4.5838,
+          "distance": 17.35,
+          "radius": 12.0
+        }
+      ]
+    }
+  },
+  {
+    "id": 12,
+    "fitness": 0.9798,
+    "genome": {
+      "core_radius": 24.0,
+      "rim_thickness": 1.5,
+      "core_color": [
+        0.98,
+        0.48,
+        0.2,
+        0.78
+      ],
+      "rim_color": [
+        0.7,
+        0.18,
+        0.1,
+        0.95
+      ],
+      "nucleus_offset": [
+        -4.41,
+        -6.37
+      ],
+      "nucleus_radius": 8.21,
+      "highlight_offset": [
+        8.22,
+        5.23
+      ],
+      "highlight_radius": 7.06,
+      "lobes": [
+        {
+          "angle": 6.181,
+          "distance": 4.09,
+          "radius": 11.63
+        },
+        {
+          "angle": 1.4442,
+          "distance": 19.91,
+          "radius": 14.03
+        },
+        {
+          "angle": 3.1753,
+          "distance": 8.55,
+          "radius": 9.64
+        },
+        {
+          "angle": 4.6058,
+          "distance": 18.85,
+          "radius": 11.09
+        }
+      ]
+    }
+  },
+  {
+    "id": 13,
+    "fitness": 0.9786,
+    "genome": {
+      "core_radius": 26.29,
+      "rim_thickness": 1.71,
+      "core_color": [
+        0.98,
+        0.48,
+        0.2,
+        0.78
+      ],
+      "rim_color": [
+        0.7,
+        0.18,
+        0.1,
+        0.95
+      ],
+      "nucleus_offset": [
+        -4.41,
+        -6.37
+      ],
+      "nucleus_radius": 8.22,
+      "highlight_offset": [
+        8.22,
+        5.23
+      ],
+      "highlight_radius": 7.06,
+      "lobes": [
+        {
+          "angle": 6.1427,
+          "distance": 6.59,
+          "radius": 10.69
+        },
+        {
+          "angle": 1.6993,
+          "distance": 23.69,
+          "radius": 14.25
+        },
+        {
+          "angle": 3.2105,
+          "distance": 5.89,
+          "radius": 8.23
+        },
+        {
+          "angle": 4.8521,
+          "distance": 14.86,
+          "radius": 10.83
+        }
+      ]
+    }
+  },
+  {
+    "id": 14,
+    "fitness": 0.9727,
+    "genome": {
+      "core_radius": 26.12,
+      "rim_thickness": 1.5,
+      "core_color": [
+        0.98,
+        0.48,
+        0.2,
+        0.78
+      ],
+      "rim_color": [
+        0.58,
+        0.1,
+        0.14,
+        0.95
+      ],
+      "nucleus_offset": [
+        -4.41,
+        -6.37
+      ],
+      "nucleus_radius": 8.21,
+      "highlight_offset": [
+        8.22,
+        5.23
+      ],
+      "highlight_radius": 7.05,
+      "lobes": [
+        {
+          "angle": 0.1628,
+          "distance": 7.94,
+          "radius": 10.3
+        },
+        {
+          "angle": 1.7401,
+          "distance": 23.51,
+          "radius": 12.91
+        },
+        {
+          "angle": 3.301,
+          "distance": 10.45,
+          "radius": 8.2
+        },
+        {
+          "angle": 4.8379,
+          "distance": 17.88,
+          "radius": 10.64
+        }
+      ]
+    }
+  },
+  {
+    "id": 15,
+    "fitness": 0.9683,
+    "genome": {
+      "core_radius": 26.73,
+      "rim_thickness": 1.84,
+      "core_color": [
+        0.98,
+        0.48,
+        0.2,
+        0.78
+      ],
+      "rim_color": [
+        0.7,
+        0.18,
+        0.1,
+        0.95
+      ],
+      "nucleus_offset": [
+        -4.41,
+        -6.37
+      ],
+      "nucleus_radius": 8.21,
+      "highlight_offset": [
+        8.22,
+        5.23
+      ],
+      "highlight_radius": 7.06,
+      "lobes": [
+        {
+          "angle": 6.1556,
+          "distance": 7.36,
+          "radius": 12.51
+        },
+        {
+          "angle": 1.4578,
+          "distance": 22.98,
+          "radius": 14.59
+        },
+        {
+          "angle": 3.1346,
+          "distance": 7.89,
+          "radius": 7.66
+        },
+        {
+          "angle": 4.335,
+          "distance": 20.26,
+          "radius": 10.63
+        }
+      ]
+    }
+  },
+  {
+    "id": 16,
+    "fitness": 0.9661,
+    "genome": {
+      "core_radius": 25.96,
+      "rim_thickness": 1.72,
+      "core_color": [
+        0.98,
+        0.48,
+        0.2,
+        0.78
+      ],
+      "rim_color": [
+        0.58,
+        0.1,
+        0.14,
+        0.95
+      ],
+      "nucleus_offset": [
+        -4.41,
+        -6.37
+      ],
+      "nucleus_radius": 8.21,
+      "highlight_offset": [
+        8.22,
+        5.23
+      ],
+      "highlight_radius": 7.05,
+      "lobes": [
+        {
+          "angle": 0.3594,
+          "distance": 4.51,
+          "radius": 11.0
+        },
+        {
+          "angle": 1.8141,
+          "distance": 23.36,
+          "radius": 15.0
+        },
+        {
+          "angle": 3.4818,
+          "distance": 6.88,
+          "radius": 7.9
+        },
+        {
+          "angle": 4.8692,
+          "distance": 16.94,
+          "radius": 11.88
+        }
+      ]
+    }
+  },
+  {
+    "id": 17,
+    "fitness": 0.9656,
+    "genome": {
+      "core_radius": 26.76,
+      "rim_thickness": 1.79,
+      "core_color": [
+        0.98,
+        0.48,
+        0.2,
+        0.78
+      ],
+      "rim_color": [
+        0.58,
+        0.1,
+        0.14,
+        0.95
+      ],
+      "nucleus_offset": [
+        -4.41,
+        -6.37
+      ],
+      "nucleus_radius": 8.21,
+      "highlight_offset": [
+        8.22,
+        5.23
+      ],
+      "highlight_radius": 7.06,
+      "lobes": [
+        {
+          "angle": 0.1467,
+          "distance": 6.95,
+          "radius": 11.2
+        },
+        {
+          "angle": 1.6784,
+          "distance": 24.09,
+          "radius": 14.39
+        },
+        {
+          "angle": 2.9034,
+          "distance": 8.27,
+          "radius": 8.34
+        },
+        {
+          "angle": 4.6818,
+          "distance": 17.53,
+          "radius": 13.39
+        }
+      ]
+    }
+  },
+  {
+    "id": 18,
+    "fitness": 0.9609,
+    "genome": {
+      "core_radius": 25.76,
+      "rim_thickness": 1.5,
+      "core_color": [
+        0.98,
+        0.48,
+        0.2,
+        0.78
+      ],
+      "rim_color": [
+        0.7,
+        0.18,
+        0.1,
+        0.95
+      ],
+      "nucleus_offset": [
+        -4.41,
+        -6.37
+      ],
+      "nucleus_radius": 8.21,
+      "highlight_offset": [
+        8.22,
+        5.23
+      ],
+      "highlight_radius": 7.06,
+      "lobes": [
+        {
+          "angle": 0.2081,
+          "distance": 8.92,
+          "radius": 12.65
+        },
+        {
+          "angle": 1.6578,
+          "distance": 23.18,
+          "radius": 13.12
+        },
+        {
+          "angle": 2.9719,
+          "distance": 6.3,
+          "radius": 8.73
+        },
+        {
+          "angle": 4.7371,
+          "distance": 14.64,
+          "radius": 10.11
+        }
+      ]
+    }
+  }
+]

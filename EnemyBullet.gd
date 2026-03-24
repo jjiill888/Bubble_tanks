@@ -32,6 +32,8 @@ func advance_projectile(delta: float) -> void:
 	var scene: Node = get_tree().current_scene
 	var target: Node2D = scene.get_player_hit_target(global_position, PLAYER_RADIUS) if scene and scene.has_method("get_player_hit_target") else null
 	if target != null:
+		if target.has_method("register_body_hit"):
+			target.register_body_hit(global_position)
 		var target_peer_id: int = scene.get_player_peer_id(target) if scene and scene.has_method("get_player_peer_id") else 1
 		scene.take_damage(DAMAGE, target_peer_id)
 		return_to_pool()

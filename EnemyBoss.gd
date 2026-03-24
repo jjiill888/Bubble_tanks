@@ -9,6 +9,8 @@ signal network_spawn_payload_ready
 const CORE_HP_BASE  := 10     # 核心基础血量（提升生存性）
 const FIRE_INTERVAL := 2.2
 const SCORE_VALUE   := 15
+const REGULAR_BOSS_UNLOCK_LEVEL := 3
+const REGULAR_BOSS_TURRET_STEP_LEVEL := 3
 const DUAL_CORE_START_LEVEL := 2
 const DUAL_CORE_BASE_CHANCE := 0.18
 const DUAL_CORE_MAX_CHANCE  := 0.32
@@ -38,21 +40,43 @@ const VISUAL_REFRESH_INTERVAL := 0.05
 #  动态参数（由 Main 在玩家升级时调用 apply_player_level）
 # ═══════════════════════════════════════════════════════
 static var _s_player_level:  int  = 0
-static var _s_turret_count:  int  = 2    # 基础炮台数，随等级 +1
+static var _s_turret_count:  int  = 1
 static var _s_spread_turret: bool = false # 第 2 级起首个炮塔为散射型
 static var _s_fire_interval: float = FIRE_INTERVAL
 static var _s_enemy_bullet_speed_multiplier: float = 1.0
 
 static func apply_player_level(level: int) -> void:
 	_s_player_level  = level
-	_s_turret_count  = 2 + level
+	_s_turret_count  = _max_regular_boss_turret_count_for_level(level)
 	_s_spread_turret = level >= 2
 	_s_fire_interval = FIRE_INTERVAL * pow(0.95, level)
 	_s_enemy_bullet_speed_multiplier = pow(1.05, level)
 	print("[EnemyBoss] apply_player_level(%d) \u5b8c\u6210\uff0c_s_player_level = %d" % [level, _s_player_level])
 
+static func _max_regular_boss_turret_count_for_level(level: int) -> int:
+	if level < REGULAR_BOSS_UNLOCK_LEVEL:
+		return 0
+	return maxi(1, int((level - REGULAR_BOSS_UNLOCK_LEVEL) / REGULAR_BOSS_TURRET_STEP_LEVEL) + 1)
+
+static func _pick_regular_boss_turret_count(player_level: int, rng: RandomNumberGenerator = null) -> int:
+	var max_turret_count := _max_regular_boss_turret_count_for_level(player_level)
+	if max_turret_count <= 1:
+		return 1
+	var total_weight := 0
+	for turret_count in range(1, max_turret_count + 1):
+		var tier_weight := maxi(1, max_turret_count - turret_count + 1)
+		total_weight += tier_weight * tier_weight
+	var roll := _rng_rangei(rng, 1, total_weight)
+	var cumulative_weight := 0
+	for turret_count in range(1, max_turret_count + 1):
+		var tier_weight := maxi(1, max_turret_count - turret_count + 1)
+		cumulative_weight += tier_weight * tier_weight
+		if roll <= cumulative_weight:
+			return turret_count
+	return max_turret_count
+
 # ═══════════════════════════════════════════════════════
-#  预生成基因组池（等级 0 使用 boss_genomes.json）
+#  导入的预生成基因组池（boss_genomes.json）
 # ═══════════════════════════════════════════════════════
 const GENOME_FILE := "res://boss_genomes.json"
 static var _json_pool:   Array = []
@@ -96,6 +120,32 @@ static func _load_json_pool() -> void:
 	if parsed is Array:
 		_json_pool = parsed
 		print("[EnemyBoss] 已加载 %d 个预生成基因组" % _json_pool.size())
+
+static func _pick_imported_genome() -> Dictionary:
+	_load_json_pool()
+	if _json_pool.is_empty():
+		return {}
+	var entry: Dictionary = _json_pool[randi() % _json_pool.size()]
+	return (entry.get("genome", entry) as Dictionary).duplicate(true)
+
+static func _imported_genome_spawn_chance(player_level: int) -> float:
+	if player_level <= 0:
+		return 1.0
+	if player_level == 1:
+		return 0.6
+	if player_level == 2:
+		return 0.45
+	if player_level == 3:
+		return 0.3
+	return 0.2
+
+func _acquire_spawn_genome() -> Dictionary:
+	var imported := _pick_imported_genome()
+	if not imported.is_empty() and randf() < _imported_genome_spawn_chance(_s_player_level):
+		print("[EnemyBoss] 使用导入的遗传算法基因组，玩家等级: %d" % _s_player_level)
+		return imported
+	print("[EnemyBoss] 使用运行时进化基因组，玩家等级: %d" % _s_player_level)
+	return _acquire_runtime_genome()
 
 static func _rngf(rng: RandomNumberGenerator = null) -> float:
 	if rng != null:
@@ -143,6 +193,8 @@ var _has_network_target := false
 var _payload_turret_count_override := -1
 var _payload_spread_turret_override := false
 var _has_payload_spread_override := false
+var _reward_turret_count := 1
+var _last_hit_by_peer_id := 0
 
 # ═══════════════════════════════════════════════════════
 #  炮塔系统
@@ -212,23 +264,16 @@ func _ready() -> void:
 		_begin_async_final_generation()
 		return
 	var genomes: Array = []
-	if _s_player_level == 0:
-		# 等级 0：使用预生成的 boss_genomes.json
-		print("[EnemyBoss] 使用 JSON 基因组池，玩家等级: 0")
-		_load_json_pool()
-		if not _json_pool.is_empty():
-			var entry = _json_pool[randi() % _json_pool.size()]
-			# JSON 格式可能是 {"genome": {...}} 或直接是基因组
-			genomes.append(entry.get("genome", entry))
-		else:
-			genomes.append(BossEvolution._fallback_genome())
-	else:
-		# 等级 1+：使用遗传算法进化的基因组
-		print("[EnemyBoss] 使用遗传算法基因组，玩家等级: %d" % _s_player_level)
-		genomes.append(_acquire_runtime_genome())
-		if _should_spawn_dual_core():
-			genomes.append(_acquire_runtime_genome())
-			print("[EnemyBoss] 生成双核心 Boss，核心数: %d" % genomes.size())
+	var primary_genome := _acquire_spawn_genome()
+	if primary_genome.is_empty():
+		primary_genome = BossEvolution._fallback_genome()
+	genomes.append(primary_genome)
+	if _s_player_level > 0 and _should_spawn_dual_core():
+		var secondary_genome := _acquire_spawn_genome()
+		if secondary_genome.is_empty():
+			secondary_genome = BossEvolution._fallback_genome()
+		genomes.append(secondary_genome)
+		print("[EnemyBoss] 生成双核心 Boss，核心数: %d" % genomes.size())
 	if force_sync_generation:
 		_generate_from_genomes(genomes)
 		return
@@ -308,6 +353,8 @@ func _apply_spawn_payload(payload: Dictionary) -> void:
 		is_final_boss = bool(payload.get("is_final_boss", is_final_boss))
 	if payload.has("turret_count"):
 		_payload_turret_count_override = int(payload.get("turret_count", _payload_turret_count_override))
+	if payload.has("reward_turret_count"):
+		_reward_turret_count = maxi(int(payload.get("reward_turret_count", _reward_turret_count)), 1)
 	if payload.has("spread_turret"):
 		_payload_spread_turret_override = bool(payload.get("spread_turret", _payload_spread_turret_override))
 		_has_payload_spread_override = true
@@ -341,7 +388,7 @@ func _report_death() -> void:
 	if is_final_boss and scene and scene.has_method("on_final_boss_killed"):
 		scene.on_final_boss_killed()
 	elif scene and scene.has_method("on_boss_killed"):
-		scene.on_boss_killed()
+		scene.on_boss_killed(_reward_turret_count, _last_hit_by_peer_id)
 
 func _generate_final_boss() -> void:
 	_begin_async_final_generation()
@@ -648,6 +695,7 @@ static func _build_regular_spawn_payload(raw_genomes: Array, player_level: int, 
 	if seed != 0:
 		rng = RandomNumberGenerator.new()
 		rng.seed = seed
+	var turret_count := EnemyBoss._pick_regular_boss_turret_count(player_level, rng)
 	var genomes: Array = []
 	for raw in raw_genomes:
 		genomes.append(raw.get("genome", raw))
@@ -671,7 +719,8 @@ static func _build_regular_spawn_payload(raw_genomes: Array, player_level: int, 
 	return {
 		"ok": true,
 		"is_final_boss": false,
-		"turret_count": 2 + player_level,
+		"turret_count": turret_count,
+		"reward_turret_count": turret_count,
 		"spread_turret": player_level >= 2,
 		"behavior_genome": genomes[0],
 		"contact_damage": DUAL_CORE_CONTACT_DAMAGE if genomes.size() >= 2 else SINGLE_CORE_CONTACT_DAMAGE,
@@ -1174,6 +1223,10 @@ func hit_by_player_bullet(bullet_pos: Vector2, bullet_radius: float) -> bool:
 	on_bubble_hit(hit_idx)
 	return true
 
+func hit_by_player_projectile(projectile: Area2D, bullet_radius: float) -> bool:
+	_last_hit_by_peer_id = int(projectile.get_owner_peer_id()) if projectile != null and projectile.has_method("get_owner_peer_id") else 0
+	return hit_by_player_bullet(projectile.global_position, bullet_radius)
+
 func _compare_data_turret_candidates(a: Dictionary, b: Dictionary) -> bool:
 	var a_score := _data_turret_candidate_score(a)
 	var b_score := _data_turret_candidate_score(b)
@@ -1506,6 +1559,25 @@ func apply_network_entity_state(state: Dictionary) -> void:
 	_has_network_target = true
 	if needs_redraw:
 		queue_redraw()
+
+func get_missile_target_local_point(from_global_position: Vector2 = Vector2.ZERO) -> Vector2:
+	var local_from := to_local(from_global_position)
+	var best_point := Vector2.ZERO
+	var best_dist_sq := INF
+	for bubble in bubbles:
+		if bubble == null or not bubble.alive or not bubble.is_core:
+			continue
+		var dist_sq: float = local_from.distance_squared_to(bubble.pos)
+		if dist_sq < best_dist_sq:
+			best_dist_sq = dist_sq
+			best_point = bubble.pos
+	if best_dist_sq < INF:
+		return best_point
+	for bubble in bubbles:
+		if bubble == null or not bubble.alive:
+			continue
+		return bubble.pos
+	return Vector2.ZERO
 
 func tick_network_interpolation(delta: float) -> void:
 	if authority_simulation or not _has_network_target:

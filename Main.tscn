@@ -7,6 +7,25 @@
 [ext_resource type="PackedScene" path="res://EnemyCompound.tscn" id="5_main"]
 [ext_resource type="AudioStreamOggVorbis" path="res://Microscopic_Pursuit.ogg" id="6_bgm"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xp_bg"]
+bg_color = Color(0.05, 0.08, 0.12, 0.88)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.18, 0.28, 0.36, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xp_fill"]
+bg_color = Color(0.26, 0.76, 1, 0.95)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
 [node name="Main" type="Node2D" unique_id=680605540]
 script = ExtResource("1_main")
 enemy_scene = ExtResource("3_main")
@@ -40,7 +59,7 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 30
-text = "击落: 0"
+text = "Score: 0"
 
 [node name="HPLabel" type="Label" parent="CanvasLayer" unique_id=482633356]
 offset_left = 20.0
@@ -64,7 +83,30 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 24
-text = "等级: 1"
+text = "Level: 1"
+
+[node name="XPBar" type="ProgressBar" parent="CanvasLayer"]
+offset_left = 20.0
+offset_top = 134.0
+offset_right = 320.0
+offset_bottom = 154.0
+show_percentage = false
+max_value = 8.0
+value = 0.0
+theme_override_styles/background = SubResource("StyleBoxFlat_xp_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_xp_fill")
+
+[node name="XPLabel" type="Label" parent="CanvasLayer"]
+offset_left = 20.0
+offset_top = 156.0
+offset_right = 260.0
+offset_bottom = 186.0
+theme_override_colors/font_color = Color(0.75, 0.9, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "XP: 0 / 8"
 
 [node name="GameOverBG" type="ColorRect" parent="CanvasLayer" unique_id=588314279]
 visible = false
@@ -94,7 +136,7 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 64
-text = "游戏结束"
+text = "Game Over"
 horizontal_alignment = 1
 
 [node name="FinalScoreLabel" type="Label" parent="CanvasLayer/GameOverBox" unique_id=1729464723]
@@ -105,7 +147,7 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 36
-text = "最终得分：0"
+text = "Score: 0"
 horizontal_alignment = 1
 
 [node name="RestartButton" type="Button" parent="CanvasLayer/GameOverBox" unique_id=1345142172]
@@ -114,7 +156,7 @@ custom_minimum_size = Vector2(0, 55)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 30
-text = "重新开始"
+text = "Restart"
 
 [node name="QuitButton" type="Button" parent="CanvasLayer/GameOverBox" unique_id=1556331242]
 process_mode = 3
@@ -122,7 +164,7 @@ custom_minimum_size = Vector2(0, 55)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 30
-text = "退出游戏"
+text = "Quit"
 
 [connection signal="timeout" from="SpawnTimer" to="." method="_on_spawn_timer_timeout"]
 [connection signal="pressed" from="CanvasLayer/GameOverBox/RestartButton" to="." method="_on_restart_button_pressed"]

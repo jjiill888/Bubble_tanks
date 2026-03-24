@@ -9,6 +9,7 @@ var _use_external_update := false
 var _color_key := "blue"
 var _palette: Dictionary = PlayerPaletteRef.get_palette("blue")
 var _visual_only := false
+var owner_peer_id := 1
 
 @onready var _collision_shape: CollisionShape2D = $CollisionShape2D
 
@@ -43,10 +44,11 @@ func advance_projectile(delta: float) -> void:
 func is_pool_active() -> bool:
 	return _pool_active
 
-func activate_from_pool(spawn_position: Vector2, spawn_rotation: float, pierce_hits: int, color_key: String = "blue", visual_only: bool = false) -> void:
+func activate_from_pool(spawn_position: Vector2, spawn_rotation: float, pierce_hits: int, color_key: String = "blue", visual_only: bool = false, shooter_peer_id: int = 1) -> void:
 	_pool_active = true
 	pierce_hits_remaining = pierce_hits
 	_visual_only = visual_only
+	owner_peer_id = shooter_peer_id
 	global_position = spawn_position
 	rotation = spawn_rotation
 	set_color_key(color_key)
@@ -78,6 +80,7 @@ func deactivate_to_pool() -> void:
 	_pool_active = false
 	pierce_hits_remaining = 0
 	_visual_only = false
+	owner_peer_id = 1
 	visible = false
 	set_process(false)
 	_use_external_update = false
@@ -85,6 +88,9 @@ func deactivate_to_pool() -> void:
 	monitorable = false
 	_collision_shape.disabled = true
 	global_position = Vector2(-10000.0, -10000.0)
+
+func get_owner_peer_id() -> int:
+	return owner_peer_id
 
 func _cleanup_if_outside_bounds() -> void:
 	var scene = get_tree().current_scene
