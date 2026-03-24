@@ -27,6 +27,10 @@ window/stretch/aspect="expand"
 
 3d/physics_engine="Jolt Physics"
 
+[network]
+
+ssl/certificate_bundle_override="res://ca-certificates.crt"
+
 [rendering]
 
 rendering_device/driver.windows="d3d12"
