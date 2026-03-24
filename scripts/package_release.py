@@ -173,7 +173,11 @@ def build_manifest(version_info: dict, packaged_assets: dict[str, dict]) -> dict
     repository = os.getenv("GITHUB_REPOSITORY", "").strip()
     release_tag = resolve_release_tag(version_info)
     channel = version_info.get("channel", "stable")
-    release_notes = os.getenv("RELEASE_NOTES", "").strip()
+    raw_notes = os.getenv("RELEASE_NOTES", "")
+    release_notes = "\n".join(
+        line for line in raw_notes.splitlines()
+        if not line.strip().lower().startswith("co-authored-by:")
+    ).strip()
     channels: dict[str, dict] = {channel: {}}
 
     for target_key, asset in packaged_assets.items():
