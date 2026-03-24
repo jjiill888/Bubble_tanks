@@ -69,6 +69,18 @@ def load_version_info() -> dict:
     return json.loads(VERSION_FILE.read_text(encoding="utf-8"))
 
 
+def resolve_release_tag(version_info: dict) -> str:
+    release_tag = os.getenv("RELEASE_TAG", "").strip()
+    if not release_tag:
+        return str(version_info["version"])
+    normalized_tag = release_tag[1:] if release_tag.startswith("v") else release_tag
+    if normalized_tag != str(version_info["version"]):
+        raise ValueError(
+            f"Release tag {release_tag!r} does not match version.json version {version_info['version']!r}"
+        )
+    return release_tag
+
+
 def repo_urls() -> tuple[str, str]:
     repository = os.getenv("GITHUB_REPOSITORY", "").strip()
     if not repository or "/" not in repository:
@@ -153,7 +165,7 @@ def package_target(target: Target, rendered_version: dict) -> dict:
 
 def build_manifest(version_info: dict, packaged_assets: dict[str, dict]) -> dict:
     repository = os.getenv("GITHUB_REPOSITORY", "").strip()
-    release_tag = f"v{version_info['version']}"
+    release_tag = resolve_release_tag(version_info)
     channel = version_info.get("channel", "stable")
     release_notes = os.getenv("RELEASE_NOTES", "").strip()
     channels: dict[str, dict] = {channel: {}}

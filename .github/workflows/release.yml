@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - "v*"
+      - "*"
 
 permissions:
   contents: write
@@ -55,6 +55,7 @@ jobs:
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
           RELEASE_NOTES: ${{ github.event.head_commit.message }}
+          RELEASE_TAG: ${{ github.ref_name }}
         run: |
           set -e
           python scripts/package_release.py
@@ -74,7 +75,7 @@ jobs:
           path: build/pages
 
       - name: Publish GitHub Release
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           files: |
