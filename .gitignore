@@ -18,3 +18,7 @@ Thumbs.db
 /Bubble tanks_x86_64.exe
 /Bubble tanks_Arm64.exe
 
+# Release pipeline output
+/build/
+/dist/
+

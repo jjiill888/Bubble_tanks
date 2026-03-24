@@ -1,0 +1,94 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  export-and-package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Godot 4.6 headless and export templates
+        run: |
+          set -e
+          GODOT_VERSION="4.6-stable"
+          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip" -O godot.zip
+          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz" -O templates.tpz
+          unzip -q godot.zip -d "$HOME/godot"
+          mkdir -p "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}"
+          mkdir -p build/template-extract
+          unzip -q templates.tpz -d build/template-extract
+          cp -R build/template-extract/templates/. "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}/"
+          chmod +x "$HOME/godot/Godot_v${GODOT_VERSION}_linux.x86_64"
+          echo "$HOME/godot" >> "$GITHUB_PATH"
+
+      - name: Export release binaries
+        run: |
+          set -e
+          mkdir -p build/exports/linux-x64 build/exports/linux-arm64 build/exports/windows-x64 build/exports/windows-arm64
+          Godot_v4.6-stable_linux.x86_64 --headless --path . --export-release "Linux" build/exports/linux-x64/BubbleTanks.x86_64
+          Godot_v4.6-stable_linux.x86_64 --headless --path . --export-release "Linux 2" build/exports/linux-arm64/BubbleTanks.arm64
+          Godot_v4.6-stable_linux.x86_64 --headless --path . --export-release "Windows Desktop" build/exports/windows-x64/BubbleTanks.exe
+          Godot_v4.6-stable_linux.x86_64 --headless --path . --export-release "Windows Desktop 2" build/exports/windows-arm64/BubbleTanks.exe
+
+      - name: Package release archives and manifest
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          RELEASE_NOTES: ${{ github.event.head_commit.message }}
+        run: |
+          set -e
+          python scripts/package_release.py
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: bubble-tanks-release
+          path: build/dist/*
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/pages
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            build/dist/*.zip
+            build/dist/*.tar.gz
+            build/dist/checksums.txt
+            build/dist/manifest.json
+
+  deploy-pages:
+    needs: export-and-package
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy manifest to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
