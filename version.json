@@ -1,8 +1,8 @@
 {
-  "version": "0.0.12",
+  "version": "0.0.13",
   "channel": "stable",
   "display_name": "Bubble Tanks",
-  "manifest_url": "",
-  "release_page": "",
-  "notes_url": ""
+  "manifest_url": "https://jjiill888.github.io/Bubble_tanks/manifest.json",
+  "release_page": "https://github.com/jjiill888/Bubble_tanks/releases/latest",
+  "notes_url": "https://github.com/jjiill888/Bubble_tanks/releases/latest"
 }

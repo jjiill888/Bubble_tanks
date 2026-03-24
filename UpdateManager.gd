@@ -9,6 +9,9 @@ const DOWNLOAD_DIR := "user://updates"
 const CHECK_DELAY_SECONDS := 1.5
 const PANEL_WIDTH := 430.0
 const PANEL_HEIGHT := 264.0
+const TOAST_WIDTH := 320.0
+const TOAST_HEIGHT := 92.0
+const TOAST_DURATION_SECONDS := 2.8
 const DOWNLOAD_SAMPLE_WINDOW_MS := 800
 const UPDATE_LOG_PREFIX := "[UpdateManager]"
 
@@ -25,13 +28,18 @@ var _download_speed_bytes_per_second := 0.0
 var _download_total_bytes := 0
 var _status := "idle"
 var _show_no_update_feedback := false
+var _manual_check_in_progress := false
 
 var _manifest_http: HTTPRequest = null
 var _download_http: HTTPRequest = null
 var _panel: PanelContainer = null
+var _toast_panel: PanelContainer = null
+var _toast_timer: Timer = null
 var _title_label: Label = null
 var _summary_label: Label = null
 var _details_label: Label = null
+var _toast_summary_label: Label = null
+var _toast_details_label: Label = null
 var _progress_bar: ProgressBar = null
 var _progress_label: Label = null
 var _primary_button: Button = null
@@ -52,8 +60,9 @@ func _ready() -> void:
 		String(_version_info.get("manifest_url", "")).strip_edges(),
 		_get_platform_key()
 	])
-	if _can_run_update_flow():
+	if _can_check_for_updates(true):
 		_setup_http_nodes()
+	if _can_run_update_flow():
 		get_tree().create_timer(CHECK_DELAY_SECONDS, true).timeout.connect(_check_for_updates)
 	else:
 		print("%s update flow disabled" % UPDATE_LOG_PREFIX)
@@ -140,33 +149,83 @@ func _build_ui() -> void:
 	_skip_button.pressed.connect(_on_skip_pressed)
 	action_row.add_child(_skip_button)
 
+	_toast_panel = PanelContainer.new()
+	_toast_panel.visible = false
+	_toast_panel.process_mode = Node.PROCESS_MODE_ALWAYS
+	_toast_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_toast_panel.anchor_left = 1.0
+	_toast_panel.anchor_right = 1.0
+	_toast_panel.anchor_top = 1.0
+	_toast_panel.anchor_bottom = 1.0
+	_toast_panel.offset_left = -TOAST_WIDTH - 20.0
+	_toast_panel.offset_right = -20.0
+	_toast_panel.offset_top = -TOAST_HEIGHT - 20.0
+	_toast_panel.offset_bottom = -20.0
+	add_child(_toast_panel)
+
+	var toast_root := VBoxContainer.new()
+	toast_root.add_theme_constant_override("separation", 4)
+	_toast_panel.add_child(toast_root)
+
+	_toast_summary_label = Label.new()
+	_toast_summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_toast_summary_label.add_theme_font_size_override("font_size", 20)
+	toast_root.add_child(_toast_summary_label)
+
+	_toast_details_label = Label.new()
+	_toast_details_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	toast_root.add_child(_toast_details_label)
+
+	_toast_timer = Timer.new()
+	_toast_timer.one_shot = true
+	_toast_timer.process_mode = Node.PROCESS_MODE_ALWAYS
+	_toast_timer.timeout.connect(_on_toast_timeout)
+	add_child(_toast_timer)
+
 func _set_prompt_visible(visible: bool) -> void:
 	if _panel != null:
 		_panel.visible = visible
+	if visible:
+		_hide_toast()
 
 func request_manual_update_check() -> void:
-	if not _can_run_update_flow():
-		_show_manual_status("更新功能当前不可用。", "请确认当前运行的是发布包，而不是编辑器。")
+	if not _can_check_for_updates(true):
+		_show_manual_status("更新功能当前不可用。", "请确认当前平台支持联网检查，并且 version.json 中存在 manifest_url。")
+		return
+	if _status == "checking":
+		_show_manual_status("正在检查更新。", "请稍候，检查完成后会在这里显示结果。")
 		return
 	_show_no_update_feedback = true
-	_check_for_updates()
+	_manual_check_in_progress = true
+	_show_manual_status("正在检查更新。", "请稍候，检查完成后会在这里显示结果。", 1.6)
+	_check_for_updates(true)
 
 func get_update_channel_label() -> String:
 	return "Nightly 渠道" if get_update_channel() == "night" else "Stable 渠道"
 
-func _show_manual_status(summary: String, details: String = "") -> void:
+func _show_manual_status(summary: String, details: String = "", duration: float = TOAST_DURATION_SECONDS) -> void:
 	_status = "idle"
-	_title_label.text = "更新检查"
-	_summary_label.text = summary
-	_details_label.text = details
-	_progress_bar.visible = false
-	_progress_label.visible = false
-	_primary_button.text = "知道了"
-	_primary_button.disabled = false
-	_secondary_button.text = "关闭"
-	_secondary_button.disabled = false
-	_skip_button.visible = false
-	_set_prompt_visible(true)
+	_show_toast(summary, details, duration)
+
+func _show_toast(summary: String, details: String = "", duration: float = TOAST_DURATION_SECONDS) -> void:
+	if _toast_summary_label == null or _toast_details_label == null or _toast_timer == null:
+		return
+	_set_prompt_visible(false)
+	_toast_summary_label.text = summary
+	_toast_details_label.text = details
+	_toast_details_label.visible = not details.is_empty()
+	_toast_panel.visible = true
+	_toast_timer.stop()
+	_toast_timer.start(maxf(duration, 0.1))
+
+func _hide_toast() -> void:
+	if _toast_panel != null:
+		_toast_panel.visible = false
+	if _toast_timer != null:
+		_toast_timer.stop()
+
+func _on_toast_timeout() -> void:
+	_hide_toast()
 
 func _setup_http_nodes() -> void:
 	_manifest_http = HTTPRequest.new()
@@ -226,12 +285,20 @@ func _save_state() -> void:
 	file.store_string(JSON.stringify(_state, "  "))
 
 func _can_run_update_flow() -> bool:
-	if Engine.is_editor_hint() or OS.has_feature("editor"):
+	if _is_editor_runtime():
+		return false
+	return _can_check_for_updates(false)
+
+func _can_check_for_updates(allow_editor: bool = false) -> bool:
+	if not allow_editor and _is_editor_runtime():
 		return false
 	if OS.has_feature("web") or OS.has_feature("android") or OS.has_feature("ios"):
 		return false
 	var manifest_url := String(_version_info.get("manifest_url", "")).strip_edges()
 	return not manifest_url.is_empty() and not _get_platform_key().is_empty()
+
+func _is_editor_runtime() -> bool:
+	return Engine.is_editor_hint() or OS.has_feature("editor")
 
 func _get_platform_key() -> String:
 	var architecture := "arm64" if OS.has_feature("arm64") else "x64"
@@ -249,9 +316,13 @@ func _build_manifest_request_url() -> String:
 	var separator := "&" if manifest_url.contains("?") else "?"
 	return "%s%scb=%d" % [manifest_url, separator, int(Time.get_unix_time_from_system())]
 
-func _check_for_updates() -> void:
-	if not _can_run_update_flow() or _manifest_http == null:
-		print("%s skipped update check; enabled=%s http_ready=%s" % [UPDATE_LOG_PREFIX, _can_run_update_flow(), _manifest_http != null])
+func _check_for_updates(allow_editor: bool = false) -> void:
+	if not _can_check_for_updates(allow_editor) or _manifest_http == null:
+		print("%s skipped update check; enabled=%s http_ready=%s allow_editor=%s" % [UPDATE_LOG_PREFIX, _can_check_for_updates(allow_editor), _manifest_http != null, allow_editor])
+		if _manual_check_in_progress:
+			_manual_check_in_progress = false
+			_show_no_update_feedback = false
+			_show_manual_status("无法检查更新。", "更新组件尚未准备完成，请稍后再试。")
 		return
 	_status = "checking"
 	var headers := PackedStringArray(["Accept: application/json", "Cache-Control: no-cache"])
@@ -261,12 +332,17 @@ func _check_for_updates() -> void:
 	if err != OK:
 		_status = "idle"
 		print("%s manifest request failed to start: %s" % [UPDATE_LOG_PREFIX, err])
+		if _manual_check_in_progress:
+			_manual_check_in_progress = false
+			_show_no_update_feedback = false
+			_show_manual_status("无法检查更新。", "检查请求启动失败，请稍后重试。")
 
 func _on_manifest_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	_status = "idle"
 	print("%s manifest completed result=%s code=%s bytes=%s" % [UPDATE_LOG_PREFIX, result, response_code, body.size()])
 	if result != HTTPRequest.RESULT_SUCCESS or response_code < 200 or response_code >= 300:
 		print("%s manifest request did not succeed" % UPDATE_LOG_PREFIX)
+		_manual_check_in_progress = false
 		if _show_no_update_feedback:
 			_show_no_update_feedback = false
 			_show_manual_status("无法检查更新。", "请稍后重试，或直接前往发布页下载。")
@@ -274,6 +350,7 @@ func _on_manifest_request_completed(result: int, response_code: int, _headers: P
 	var parsed = JSON.parse_string(body.get_string_from_utf8())
 	if typeof(parsed) != TYPE_DICTIONARY:
 		print("%s manifest JSON parse failed" % UPDATE_LOG_PREFIX)
+		_manual_check_in_progress = false
 		if _show_no_update_feedback:
 			_show_no_update_feedback = false
 			_show_manual_status("更新数据解析失败。", "请稍后重试。")
@@ -282,18 +359,21 @@ func _on_manifest_request_completed(result: int, response_code: int, _headers: P
 	_latest_version = String(_remote_manifest.get("latest_version", "")).strip_edges()
 	print("%s latest=%s local=%s" % [UPDATE_LOG_PREFIX, _latest_version, String(_version_info.get("version", "0.0.0"))])
 	if _latest_version.is_empty():
+		_manual_check_in_progress = false
 		if _show_no_update_feedback:
 			_show_no_update_feedback = false
 			_show_manual_status("暂时没有可用更新信息。")
 		return
 	if _compare_versions(_latest_version, String(_version_info.get("version", "0.0.0"))) <= 0:
 		print("%s no newer version available" % UPDATE_LOG_PREFIX)
+		_manual_check_in_progress = false
 		if _show_no_update_feedback:
 			_show_no_update_feedback = false
 			_show_manual_status("当前已经是最新版本。", "当前版本 %s" % String(_version_info.get("version", "0.0.0")))
 		return
 	if String(_state.get("skipped_version", "")) == _latest_version:
 		print("%s latest version previously skipped" % UPDATE_LOG_PREFIX)
+		_manual_check_in_progress = false
 		if _show_no_update_feedback:
 			_show_no_update_feedback = false
 			_show_manual_status("这个版本之前已被跳过。", "如需再次提醒，可切换渠道或等待下一个版本。")
@@ -304,11 +384,13 @@ func _on_manifest_request_completed(result: int, response_code: int, _headers: P
 	_remote_package = channel_manifest.get(_get_platform_key(), {})
 	if _remote_package.is_empty():
 		print("%s missing package for channel=%s platform=%s" % [UPDATE_LOG_PREFIX, channel_name, _get_platform_key()])
+		_manual_check_in_progress = false
 		if _show_no_update_feedback:
 			_show_no_update_feedback = false
 			_show_manual_status("当前渠道没有适用于本机的更新包。", get_update_channel_label())
 		return
 	print("%s update available package=%s" % [UPDATE_LOG_PREFIX, JSON.stringify(_remote_package)])
+	_manual_check_in_progress = false
 	_show_no_update_feedback = false
 	_show_update_prompt()
 
@@ -334,6 +416,7 @@ func toggle_update_channel() -> String:
 func _show_update_prompt() -> void:
 	var current_version := String(_version_info.get("version", "0.0.0"))
 	var package_size := int(_remote_package.get("size", 0))
+	_hide_toast()
 	_title_label.text = "发现新版本 %s" % _latest_version
 	_summary_label.text = "当前版本 %s，可更新到 %s。" % [current_version, _latest_version]
 	var details := PackedStringArray()
@@ -345,19 +428,34 @@ func _show_update_prompt() -> void:
 	var minimum_supported := String(_remote_manifest.get("minimum_supported_version", "")).strip_edges()
 	if not minimum_supported.is_empty() and _compare_versions(current_version, minimum_supported) < 0:
 		details.append("当前版本已低于最低支持版本，建议立即更新。")
+	if _is_editor_runtime():
+		details.append("当前在 Godot 编辑器中运行，只能检查更新并打开发布页，不能直接安装。")
 	_details_label.text = "\n".join(details)
 	_progress_bar.visible = false
 	_progress_label.visible = false
-	_primary_button.text = "立即更新"
+	_primary_button.text = "打开发布页" if _is_editor_runtime() else "立即更新"
 	_primary_button.disabled = false
-	_secondary_button.text = "稍后提醒"
+	_secondary_button.text = "关闭" if _is_editor_runtime() else "稍后提醒"
 	_secondary_button.disabled = false
-	_skip_button.visible = true
+	_skip_button.visible = not _is_editor_runtime()
 	_skip_button.disabled = false
 	_set_prompt_visible(true)
 
 func _on_primary_pressed() -> void:
 	if _primary_button.text == "知道了":
+		_set_prompt_visible(false)
+		return
+	if _primary_button.text == "打开发布页":
+		var release_page := String(_version_info.get("release_page", "")).strip_edges()
+		if release_page.is_empty():
+			release_page = String(_remote_manifest.get("release_page", "")).strip_edges()
+		if release_page.is_empty():
+			_show_manual_status("未配置发布页地址。", "请检查 version.json 中的 release_page。")
+			return
+		var err := OS.shell_open(release_page)
+		if err != OK:
+			_show_manual_status("无法打开发布页。", release_page)
+			return
 		_set_prompt_visible(false)
 		return
 	if _status == "downloading":

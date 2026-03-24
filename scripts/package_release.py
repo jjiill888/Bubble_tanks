@@ -81,10 +81,13 @@ def resolve_release_tag(version_info: dict) -> str:
     return release_tag
 
 
-def repo_urls() -> tuple[str, str]:
+def repo_urls(version_info: dict) -> tuple[str, str]:
     repository = os.getenv("GITHUB_REPOSITORY", "").strip()
     if not repository or "/" not in repository:
-        return "", ""
+        return (
+            str(version_info.get("manifest_url", "")).strip(),
+            str(version_info.get("release_page", "")).strip(),
+        )
     owner, repo = repository.split("/", 1)
     manifest_url = f"https://{owner}.github.io/{repo}/manifest.json"
     release_page = f"https://github.com/{repository}/releases/latest"
@@ -203,7 +206,7 @@ def main() -> None:
     ensure_clean_dir(PAGES_DIR)
 
     version_info = load_version_info()
-    manifest_url, release_page = repo_urls()
+    manifest_url, release_page = repo_urls(version_info)
     rendered_version = rendered_version_info(version_info, manifest_url, release_page)
 
     packaged_assets: dict[str, dict] = {}

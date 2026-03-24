@@ -30,7 +30,7 @@
 
 ## 当前版本
 
-- `0.0.12`
+- `0.0.13`
 
 ## 运行方式
 
@@ -67,11 +67,13 @@
 - 客户端启动后会读取 `res://version.json`，请求远端 `manifest.json`，发现新版本后提示用户下载更新。
 - 下载过程会显示包体大小、实时速度和进度条；下载完成后会调用包内 `updater/` 安装脚本替换文件并重启游戏。
 - GitHub Actions 工作流位于 `.github/workflows/release.yml`，会导出、打包、生成 `manifest.json` 和 `checksums.txt`，并在打 tag 时上传到 GitHub Releases。
-- 本地开发默认不会检查更新；只有打包产物里的 `version.json` 被工作流注入实际仓库地址后，更新功能才会启用。
+- 编辑器内运行默认不会检查更新。
+- 桌面包会读取可执行文件旁边的 `version.json`；当前仓库已写入默认发布地址，因此本地导出的桌面包也可以直接检查更新。
+- GitHub Actions 仍会在正式发布时按当前仓库信息覆盖这些地址。
 
 ### 发布步骤
 
 1. 确认 `version.json` 里的版本号。
-2. 推送 tag，例如 `0.0.12`。
+2. 推送 tag，例如 `0.0.13`。
 3. GitHub Actions 自动导出四个平台包、生成 manifest 并发布 Release。
 4. 客户端下一次启动会读取 GitHub Pages 上的 `manifest.json` 检查更新。
