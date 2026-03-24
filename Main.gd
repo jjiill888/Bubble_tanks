@@ -16,6 +16,9 @@ const UPDATE_MANAGER_SCRIPT := preload("res://UpdateManager.gd")
 const GLOBAL_BGM := preload("res://Microscopic_Pursuit.ogg")
 const ENEMY_DEATH_SFX := preload("res://universfield-bubble-pop-07-487896.mp3")
 const BGM_BUS_NAME := &"BGM"
+const SETTINGS_FILE_NAME := "bubble_tanks.cfg"
+const SETTINGS_SECTION_AUDIO := "audio"
+const SETTINGS_KEY_MASTER_VOLUME := "master_volume"
 const BGM_NORMAL_VOLUME_DB := -2.0
 const BGM_MANUAL_PAUSE_VOLUME_DB := -10.0
 const BGM_MIX_TWEEN_DURATION := 0.22
@@ -215,6 +218,7 @@ func _set_master_volume_linear(value: float) -> void:
 	var volume_db := linear_to_db(clamped_value) if clamped_value > 0.0001 else -80.0
 	AudioServer.set_bus_volume_db(master_bus_index, volume_db)
 	_sync_audio_ui()
+	_save_audio_settings()
 
 func _get_master_volume_linear() -> float:
 	var master_bus_index := AudioServer.get_bus_index(&"Master")
@@ -228,6 +232,30 @@ func _sync_audio_ui() -> void:
 	if _master_volume_value_label != null:
 		_master_volume_value_label.text = "%d%%" % int(round(_get_master_volume_linear() * 100.0))
 
+func _settings_file_path() -> String:
+	var base_dir := OS.get_executable_path().get_base_dir()
+	if base_dir.is_empty():
+		base_dir = ProjectSettings.globalize_path("res://")
+	return base_dir.path_join(SETTINGS_FILE_NAME)
+
+func _load_audio_settings() -> void:
+	var settings := ConfigFile.new()
+	var err := settings.load(_settings_file_path())
+	if err != OK:
+		return
+	if settings.has_section_key(SETTINGS_SECTION_AUDIO, SETTINGS_KEY_MASTER_VOLUME):
+		var stored_volume := clampf(float(settings.get_value(SETTINGS_SECTION_AUDIO, SETTINGS_KEY_MASTER_VOLUME, 1.0)), 0.0, 1.0)
+		_set_master_volume_linear(stored_volume)
+
+func _save_audio_settings() -> void:
+	var settings := ConfigFile.new()
+	var settings_path := _settings_file_path()
+	var load_err := settings.load(settings_path)
+	if load_err != OK and load_err != ERR_FILE_NOT_FOUND:
+		return
+	settings.set_value(SETTINGS_SECTION_AUDIO, SETTINGS_KEY_MASTER_VOLUME, _get_master_volume_linear())
+	settings.save(settings_path)
+
 func _is_pause_event(event: InputEvent) -> bool:
 	return event is InputEventKey \
 			and event.pressed \
@@ -236,6 +264,7 @@ func _is_pause_event(event: InputEvent) -> bool:
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_load_audio_settings()
 	$Turret.process_mode = Node.PROCESS_MODE_PAUSABLE
 	$Bullets.process_mode = Node.PROCESS_MODE_PAUSABLE
 	$Enemies.process_mode = Node.PROCESS_MODE_PAUSABLE
