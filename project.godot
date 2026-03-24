@@ -29,7 +29,7 @@ window/stretch/aspect="expand"
 
 [network]
 
-ssl/certificate_bundle_override="res://ca-certificates.crt"
+tls/certificate_bundle_override="res://ca-certificates.crt"
 
 [rendering]
 
