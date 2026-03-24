@@ -2,6 +2,7 @@ extends Control
 
 signal update_channel_changed(channel: String)
 
+const EXTERNAL_VERSION_INFO_FILE_NAME := "version.json"
 const VERSION_INFO_PATH := "res://version.json"
 const STATE_PATH := "user://update_state.json"
 const DOWNLOAD_DIR := "user://updates"
@@ -153,14 +154,30 @@ func _setup_http_nodes() -> void:
 
 func _load_version_info() -> void:
 	_version_info.clear()
-	if not FileAccess.file_exists(VERSION_INFO_PATH):
-		return
-	var file := FileAccess.open(VERSION_INFO_PATH, FileAccess.READ)
+	var external_path := _get_external_version_info_path()
+	if not external_path.is_empty():
+		_version_info = _read_json_dictionary(external_path)
+	if _version_info.is_empty():
+		_version_info = _read_json_dictionary(VERSION_INFO_PATH)
+
+func _get_external_version_info_path() -> String:
+	if Engine.is_editor_hint() or OS.has_feature("editor"):
+		return ""
+	var executable_path := OS.get_executable_path().strip_edges()
+	if executable_path.is_empty():
+		return ""
+	return executable_path.get_base_dir().path_join(EXTERNAL_VERSION_INFO_FILE_NAME)
+
+func _read_json_dictionary(path: String) -> Dictionary:
+	if path.is_empty() or not FileAccess.file_exists(path):
+		return {}
+	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
-		return
+		return {}
 	var parsed = JSON.parse_string(file.get_as_text())
 	if typeof(parsed) == TYPE_DICTIONARY:
-		_version_info = parsed
+		return parsed
+	return {}
 
 func _load_state() -> void:
 	_state.clear()
