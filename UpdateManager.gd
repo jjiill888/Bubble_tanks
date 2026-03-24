@@ -9,6 +9,7 @@ const CHECK_DELAY_SECONDS := 1.5
 const PANEL_WIDTH := 430.0
 const PANEL_HEIGHT := 264.0
 const DOWNLOAD_SAMPLE_WINDOW_MS := 800
+const UPDATE_LOG_PREFIX := "[UpdateManager]"
 
 var _version_info: Dictionary = {}
 var _state: Dictionary = {}
@@ -42,9 +43,18 @@ func _ready() -> void:
 	_load_version_info()
 	_load_state()
 	_build_ui()
+	print("%s version=%s channel=%s manifest=%s platform=%s" % [
+		UPDATE_LOG_PREFIX,
+		String(_version_info.get("version", "")),
+		get_update_channel(),
+		String(_version_info.get("manifest_url", "")).strip_edges(),
+		_get_platform_key()
+	])
 	if _can_run_update_flow():
 		_setup_http_nodes()
 		get_tree().create_timer(CHECK_DELAY_SECONDS, true).timeout.connect(_check_for_updates)
+	else:
+		print("%s update flow disabled" % UPDATE_LOG_PREFIX)
 
 func _process(_delta: float) -> void:
 	if _status != "downloading" or _download_http == null:
@@ -179,43 +189,55 @@ func _can_run_update_flow() -> bool:
 
 func _get_platform_key() -> String:
 	var architecture := "arm64" if OS.has_feature("arm64") else "x64"
-	if OS.has_feature("windows"):
+	var os_name := OS.get_name().to_lower()
+	if OS.has_feature("windows") or os_name == "windows":
 		return "windows-%s" % architecture
-	if OS.has_feature("linuxbsd"):
+	if OS.has_feature("linuxbsd") or os_name == "linux":
 		return "linux-%s" % architecture
 	return ""
 
 func _check_for_updates() -> void:
 	if not _can_run_update_flow() or _manifest_http == null:
+		print("%s skipped update check; enabled=%s http_ready=%s" % [UPDATE_LOG_PREFIX, _can_run_update_flow(), _manifest_http != null])
 		return
 	_status = "checking"
 	var headers := PackedStringArray(["Accept: application/json", "Cache-Control: no-cache"])
 	var manifest_url := String(_version_info.get("manifest_url", "")).strip_edges()
+	print("%s checking manifest %s" % [UPDATE_LOG_PREFIX, manifest_url])
 	var err := _manifest_http.request(manifest_url, headers, HTTPClient.METHOD_GET)
 	if err != OK:
 		_status = "idle"
+		print("%s manifest request failed to start: %s" % [UPDATE_LOG_PREFIX, err])
 
 func _on_manifest_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	_status = "idle"
+	print("%s manifest completed result=%s code=%s bytes=%s" % [UPDATE_LOG_PREFIX, result, response_code, body.size()])
 	if result != HTTPRequest.RESULT_SUCCESS or response_code < 200 or response_code >= 300:
+		print("%s manifest request did not succeed" % UPDATE_LOG_PREFIX)
 		return
 	var parsed = JSON.parse_string(body.get_string_from_utf8())
 	if typeof(parsed) != TYPE_DICTIONARY:
+		print("%s manifest JSON parse failed" % UPDATE_LOG_PREFIX)
 		return
 	_remote_manifest = parsed
 	_latest_version = String(_remote_manifest.get("latest_version", "")).strip_edges()
+	print("%s latest=%s local=%s" % [UPDATE_LOG_PREFIX, _latest_version, String(_version_info.get("version", "0.0.0"))])
 	if _latest_version.is_empty():
 		return
 	if _compare_versions(_latest_version, String(_version_info.get("version", "0.0.0"))) <= 0:
+		print("%s no newer version available" % UPDATE_LOG_PREFIX)
 		return
 	if String(_state.get("skipped_version", "")) == _latest_version:
+		print("%s latest version previously skipped" % UPDATE_LOG_PREFIX)
 		return
 	var channels: Dictionary = _remote_manifest.get("channels", {})
 	var channel_name := get_update_channel()
 	var channel_manifest: Dictionary = channels.get(channel_name, {})
 	_remote_package = channel_manifest.get(_get_platform_key(), {})
 	if _remote_package.is_empty():
+		print("%s missing package for channel=%s platform=%s" % [UPDATE_LOG_PREFIX, channel_name, _get_platform_key()])
 		return
+	print("%s update available package=%s" % [UPDATE_LOG_PREFIX, JSON.stringify(_remote_package)])
 	_show_update_prompt()
 
 func get_update_channel() -> String:
