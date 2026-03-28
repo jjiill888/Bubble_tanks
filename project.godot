@@ -23,13 +23,13 @@ window/size/viewport_height=1080
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
-[physics]
-
-3d/physics_engine="Jolt Physics"
-
 [network]
 
 tls/certificate_bundle_override="res://ca-certificates.crt"
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
 
 [rendering]
 
