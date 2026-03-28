@@ -8,7 +8,6 @@ const JITTER      := 65.0    # 随机位移量
 const BASE_ARM_LEN := 13.0   # 十字臂半长（base 尺寸）
 const BASE_ARM_W  := 5.0     # 十字臂半宽
 const SIZE_VAR    := 0.55    # 尺寸变化范围 (0…1)
-const SEED        := 83741   # 固定种子
 
 # 覆盖最大竞技场 (~6720×3780 at lv15) + 余量
 const COLS := 35
@@ -18,7 +17,7 @@ var _algae: Array[Dictionary] = []
 
 func _ready() -> void:
 	var rng := RandomNumberGenerator.new()
-	rng.seed = SEED
+	rng.randomize()
 	for row in range(ROWS):
 		for col in range(COLS):
 			var cx := col * GRID_SIZE + rng.randf_range(-JITTER, JITTER)
@@ -39,16 +38,7 @@ func _ready() -> void:
 			})
 
 func _draw() -> void:
-	# 简单视口剔除：仅绘制屏幕附近的藻类
-	var vt     := get_viewport_transform()
-	var vs     := get_viewport_rect().size
-	var margin := 80.0
 	for a in _algae:
-		var sp: Vector2 = vt * a["pos"]
-		if sp.x < -margin or sp.x > vs.x + margin:
-			continue
-		if sp.y < -margin or sp.y > vs.y + margin:
-			continue
 		_draw_cross(a)
 
 func _draw_cross(a: Dictionary) -> void:
