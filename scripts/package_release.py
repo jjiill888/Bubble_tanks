@@ -27,6 +27,7 @@ class Target:
     archive_prefix: str
     archive_kind: str
     updater_script: Path
+    source_is_zip: bool = False
 
 
 TARGETS = [
@@ -61,6 +62,15 @@ TARGETS = [
         archive_prefix="bubble-tanks-linux-arm64",
         archive_kind="tar.gz",
         updater_script=ROOT / "updater" / "install_update.sh",
+    ),
+    Target(
+        key="macos-universal",
+        source_path=EXPORT_DIR / "macos" / "BubbleTanks.zip",
+        executable_name="BubbleTanks.app",
+        archive_prefix="bubble-tanks-macos-universal",
+        archive_kind="zip",
+        updater_script=ROOT / "updater" / "install_update.sh",
+        source_is_zip=True,
     ),
 ]
 
@@ -134,7 +144,43 @@ def set_executable(path: Path) -> None:
     path.chmod(current_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
 
+def package_macos_zip_target(target: Target, rendered_version: dict) -> dict:
+    """Package a macOS target whose Godot export is already a .zip (distribution_type=ZIP).
+
+    Copies every entry from the Godot-produced zip verbatim (preserving permissions
+    and symlinks via ZipInfo.external_attr), then appends version.json and the
+    updater script, producing the final distribution archive.
+    """
+    if not target.source_path.exists():
+        raise FileNotFoundError(f"Missing exported zip for {target.key}: {target.source_path}")
+
+    version = str(rendered_version["version"])
+    package_stem = f"{target.archive_prefix}.{version}"
+    archive_path = DIST_DIR / f"{package_stem}.zip"
+
+    version_json_bytes = (json.dumps(rendered_version, indent=2) + "\n").encode("utf-8")
+    updater_bytes = target.updater_script.read_bytes()
+
+    with zipfile.ZipFile(target.source_path, "r") as src_zip, \
+         zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as dst_zip:
+        for info in src_zip.infolist():
+            dst_zip.writestr(info, src_zip.read(info.filename))
+        dst_zip.writestr("version.json", version_json_bytes)
+        updater_info = zipfile.ZipInfo(f"updater/{target.updater_script.name}")
+        updater_info.external_attr = (0o755 & 0xFFFF) << 16
+        dst_zip.writestr(updater_info, updater_bytes, compress_type=zipfile.ZIP_DEFLATED)
+
+    return {
+        "filename": archive_path.name,
+        "size": archive_path.stat().st_size,
+        "sha256": sha256_for_file(archive_path),
+    }
+
+
 def package_target(target: Target, rendered_version: dict) -> dict:
+    if target.source_is_zip:
+        return package_macos_zip_target(target, rendered_version)
+
     if not target.source_path.exists():
         raise FileNotFoundError(f"Missing exported binary for {target.key}: {target.source_path}")
 

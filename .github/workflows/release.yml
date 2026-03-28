@@ -48,11 +48,12 @@ jobs:
       - name: Export release binaries
         run: |
           set -e
-          mkdir -p build/exports/linux-x64 build/exports/linux-arm64 build/exports/windows-x64 build/exports/windows-arm64
+          mkdir -p build/exports/linux-x64 build/exports/linux-arm64 build/exports/windows-x64 build/exports/windows-arm64 build/exports/macos
           Godot_v4.6-stable_linux.x86_64 --headless --path . --export-release "Linux" build/exports/linux-x64/BubbleTanks.x86_64
           Godot_v4.6-stable_linux.x86_64 --headless --path . --export-release "Linux 2" build/exports/linux-arm64/BubbleTanks.arm64
           Godot_v4.6-stable_linux.x86_64 --headless --path . --export-release "Windows Desktop" build/exports/windows-x64/BubbleTanks.exe
           Godot_v4.6-stable_linux.x86_64 --headless --path . --export-release "Windows Desktop 2" build/exports/windows-arm64/BubbleTanks.exe
+          Godot_v4.6-stable_linux.x86_64 --headless --path . --export-release "macOS" build/exports/macos/BubbleTanks.zip
 
       - name: Package release archives and manifest
         env:

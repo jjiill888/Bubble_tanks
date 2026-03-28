@@ -35,4 +35,5 @@ tls/certificate_bundle_override="res://ca-certificates.crt"
 
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true
 environment/default_clear_color=Color(0.04, 0.07, 0.14, 1)
