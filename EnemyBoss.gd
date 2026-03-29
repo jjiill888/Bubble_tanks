@@ -32,7 +32,7 @@ const SHIELD_PROTECT_RADIUS := 118.0
 const ARMOR_DAMAGE_FACTOR := 0.58
 const LURE_MAX_PRESSURE := 0.45
 const LURE_SPEED_BONUS := 0.22
-const VISUAL_REFRESH_INTERVAL := 0.05
+const VISUAL_REFRESH_INTERVAL := 0.10
 
 @export var speed: float = 38.0
 
@@ -194,6 +194,7 @@ var _payload_turret_count_override := -1
 var _payload_spread_turret_override := false
 var _has_payload_spread_override := false
 var _reward_turret_count := 1
+var _is_dual_core := false
 var _last_hit_by_peer_id := 0
 
 # ═══════════════════════════════════════════════════════
@@ -224,6 +225,7 @@ var _last_target_pos: Vector2 = Vector2.ZERO
 var _target_velocity: Vector2 = Vector2.ZERO
 var _has_target_sample: bool = false
 var _visual_refresh_timer: float = 0.0
+var _on_screen: bool = true
 
 # ═══════════════════════════════════════════════════════
 #  进化追踪
@@ -355,6 +357,8 @@ func _apply_spawn_payload(payload: Dictionary) -> void:
 		_payload_turret_count_override = int(payload.get("turret_count", _payload_turret_count_override))
 	if payload.has("reward_turret_count"):
 		_reward_turret_count = maxi(int(payload.get("reward_turret_count", _reward_turret_count)), 1)
+	if payload.has("is_dual_core"):
+		_is_dual_core = bool(payload.get("is_dual_core", false))
 	if payload.has("spread_turret"):
 		_payload_spread_turret_override = bool(payload.get("spread_turret", _payload_spread_turret_override))
 		_has_payload_spread_override = true
@@ -388,7 +392,7 @@ func _report_death() -> void:
 	if is_final_boss and scene and scene.has_method("on_final_boss_killed"):
 		scene.on_final_boss_killed()
 	elif scene and scene.has_method("on_boss_killed"):
-		scene.on_boss_killed(_reward_turret_count, _last_hit_by_peer_id)
+		scene.on_boss_killed(_reward_turret_count, _last_hit_by_peer_id, _is_dual_core)
 
 func _generate_final_boss() -> void:
 	_begin_async_final_generation()
@@ -723,6 +727,7 @@ static func _build_regular_spawn_payload(raw_genomes: Array, player_level: int, 
 		"reward_turret_count": turret_count,
 		"spread_turret": player_level >= 2,
 		"behavior_genome": genomes[0],
+		"is_dual_core": genomes.size() >= 2,
 		"contact_damage": DUAL_CORE_CONTACT_DAMAGE if genomes.size() >= 2 else SINGLE_CORE_CONTACT_DAMAGE,
 		"speed": REGULAR_BOSS_SPEED,
 		"data": merged,
@@ -1200,7 +1205,7 @@ func _finalize_from_data(data: Array, cluster_count: int) -> void:
 		bs.area = area
 		bubbles.append(bs)
 
-func hit_by_player_bullet(bullet_pos: Vector2, bullet_radius: float) -> bool:
+func hit_by_player_bullet(bullet_pos: Vector2, bullet_radius: float, extra_core_damage: int = 0) -> bool:
 	if _generation_pending or bubbles.is_empty():
 		return false
 	var local_bullet_pos := to_local(bullet_pos)
@@ -1220,12 +1225,13 @@ func hit_by_player_bullet(bullet_pos: Vector2, bullet_radius: float) -> bool:
 			hit_idx = i
 	if hit_idx < 0:
 		return false
-	on_bubble_hit(hit_idx)
+	on_bubble_hit(hit_idx, extra_core_damage)
 	return true
 
 func hit_by_player_projectile(projectile: Area2D, bullet_radius: float) -> bool:
 	_last_hit_by_peer_id = int(projectile.get_owner_peer_id()) if projectile != null and projectile.has_method("get_owner_peer_id") else 0
-	return hit_by_player_bullet(projectile.global_position, bullet_radius)
+	var bonus := int(projectile.core_damage_bonus) if projectile != null and "core_damage_bonus" in projectile else 0
+	return hit_by_player_bullet(projectile.global_position, bullet_radius, bonus)
 
 func _compare_data_turret_candidates(a: Dictionary, b: Dictionary) -> bool:
 	var a_score := _data_turret_candidate_score(a)
@@ -1455,13 +1461,26 @@ func _process(delta: float) -> void:
 	_visual_refresh_timer -= delta
 	if _visual_refresh_timer <= 0.0:
 		_visual_refresh_timer = VISUAL_REFRESH_INTERVAL
-		queue_redraw()
+		_update_on_screen()
+		if _on_screen:
+			queue_redraw()
 
 func _cleanup_if_outside_bounds() -> void:
 	var scene = get_tree().current_scene
 	var margin := FINAL_BOSS_CLEANUP_MARGIN if is_final_boss else 420.0
 	if scene and scene.has_method("is_outside_cleanup_bounds") and scene.is_outside_cleanup_bounds(global_position, margin):
 		queue_free()
+
+func _update_on_screen() -> void:
+	var viewport := get_viewport()
+	if viewport == null:
+		_on_screen = true
+		return
+	var screen_pos := viewport.get_canvas_transform() * global_position
+	var vp_size := viewport.get_visible_rect().size
+	var margin := 360.0
+	_on_screen = screen_pos.x > -margin and screen_pos.y > -margin \
+		and screen_pos.x < vp_size.x + margin and screen_pos.y < vp_size.y + margin
 
 func _is_touching_player(player_pos: Vector2) -> bool:
 	for bubble in bubbles:
@@ -1557,7 +1576,7 @@ func apply_network_entity_state(state: Dictionary) -> void:
 		bubble.hp = next_hp
 		bubble.alive = next_alive
 	_has_network_target = true
-	if needs_redraw:
+	if needs_redraw and _on_screen:
 		queue_redraw()
 
 func get_missile_target_local_point(from_global_position: Vector2 = Vector2.ZERO) -> Vector2:
@@ -1593,9 +1612,10 @@ func tick_network_interpolation(delta: float) -> void:
 	if _network_target_turret_angles.size() == turret_angles.size():
 		for i in range(turret_angles.size()):
 			turret_angles[i] = lerp_angle(float(turret_angles[i]), float(_network_target_turret_angles[i]), min(1.0, delta * 16.0))
-	queue_redraw()
+	if _on_screen:
+		queue_redraw()
 
-func on_bubble_hit(idx: int) -> void:
+func on_bubble_hit(idx: int, extra_core_damage: int = 0) -> void:
 	if idx >= bubbles.size():
 		return
 	var resolved_idx := _resolve_hit_target(idx)
@@ -1603,7 +1623,10 @@ func on_bubble_hit(idx: int) -> void:
 	if not b.alive:
 		return
 
-	b.damage_bank += _module_incoming_damage(b)
+	var incoming := _module_incoming_damage(b)
+	if b.is_core and extra_core_damage > 0:
+		incoming += float(extra_core_damage)
+	b.damage_bank += incoming
 	var applied_damage := int(floor(b.damage_bank))
 	if applied_damage <= 0:
 		queue_redraw()

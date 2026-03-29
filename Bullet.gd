@@ -4,6 +4,7 @@ const PlayerPaletteRef := preload("res://PlayerPalette.gd")
 
 @export var speed: float = 750.0
 var pierce_hits_remaining: int = 0   # 剩余可继续穿透的命中次数
+var core_damage_bonus: int = 0       # 表面活性剂：对核心额外伤害
 var _pool_active := true
 var _use_external_update := false
 var _color_key := "blue"
@@ -47,6 +48,7 @@ func is_pool_active() -> bool:
 func activate_from_pool(spawn_position: Vector2, spawn_rotation: float, pierce_hits: int, color_key: String = "blue", visual_only: bool = false, shooter_peer_id: int = 1) -> void:
 	_pool_active = true
 	pierce_hits_remaining = pierce_hits
+	core_damage_bonus = 0
 	_visual_only = visual_only
 	owner_peer_id = shooter_peer_id
 	global_position = spawn_position
@@ -79,6 +81,7 @@ func return_to_pool() -> void:
 func deactivate_to_pool() -> void:
 	_pool_active = false
 	pierce_hits_remaining = 0
+	core_damage_bonus = 0
 	_visual_only = false
 	owner_peer_id = 1
 	visible = false

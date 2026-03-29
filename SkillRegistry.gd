@@ -14,7 +14,7 @@ static var _POOL: Array[Dictionary] = [
 	{
 		"id":        "surfactant",
 		"name":      "表面活性剂",
-		"desc":      "子弹获得有限穿透\n第1层最多击破2个泡泡，第2层4个，最多叠5层",
+		"desc":      "子弹获得有限穿透，对核心伤害+1\n第1层最多击破2个泡泡，第2层4个，最多叠5层",
 		"color":     Color(0.3, 0.85, 1.0),
 		"stackable": true,
 		"max_stack": 5,
@@ -71,7 +71,7 @@ static func _web_skill_copy(skill: Dictionary) -> Dictionary:
 	match String(skill.get("id", "")):
 		"surfactant":
 			localized["name"] = "Surfactant"
-			localized["desc"] = "Bullets gain limited pierce\nLv1 pops 2 bubbles, Lv2 pops 4, up to 5 stacks"
+			localized["desc"] = "Bullets gain limited pierce, +1 core damage per stack\nLv1 pops 2 bubbles, Lv2 pops 4, up to 5 stacks"
 		"red_bull":
 			localized["name"] = "Red Bull"
 			localized["desc"] = "Fire rate +10%"

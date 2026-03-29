@@ -267,7 +267,10 @@ func apply_input_state(input_state: Dictionary, delta: float) -> void:
 		float(input_state.get("move_y", 0.0))
 	)
 	if dir != Vector2.ZERO:
-		global_position += dir.normalized() * move_speed * delta
+		var effective_speed := move_speed
+		if _camera != null and is_local_player:
+			effective_speed = move_speed / maxf(_camera.zoom.x, 0.1)
+		global_position += dir.normalized() * effective_speed * delta
 		var scene := get_tree().current_scene
 		var arena: Vector2 = get_viewport_rect().size
 		if scene and scene.has_method("get_active_arena_size"):
@@ -503,10 +506,12 @@ func fire() -> void:
 				visual_only,
 				get_network_peer_id()
 			)
+			bullet.core_damage_bonus = surfactant_level
 		else:
 			bullet.global_position = fire_point["pos"]
 			bullet.rotation = fire_point["rot"]
 			bullet.pierce_hits_remaining = _surfactant_pierce_hits()
+			bullet.core_damage_bonus = surfactant_level
 			if bullet.has_method("set_color_key"):
 				bullet.set_color_key(player_color_key)
 	if scene and scene.has_method("notify_player_fire"):

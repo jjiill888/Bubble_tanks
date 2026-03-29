@@ -5,6 +5,11 @@ var direction: Vector2 = Vector2.RIGHT
 var _pool_active := true
 var _use_external_update := false
 var _visual_only := false
+var _off_camera_timer: float = 0.0
+var _off_camera_check_accum: float = 0.0
+
+const OFF_CAMERA_DESTROY_TIME := 1.0
+const OFF_CAMERA_CHECK_INTERVAL := 0.2
 
 const PLAYER_RADIUS := 22.0
 const DAMAGE        := 5
@@ -39,12 +44,36 @@ func advance_projectile(delta: float) -> void:
 		return_to_pool()
 		return
 	_cleanup_if_outside_bounds()
+	if _pool_active:
+		_update_off_camera_timer(delta)
 
 func is_pool_active() -> bool:
 	return _pool_active
 
+func _update_off_camera_timer(delta: float) -> void:
+	_off_camera_check_accum += delta
+	if _off_camera_check_accum < OFF_CAMERA_CHECK_INTERVAL:
+		return
+	_off_camera_check_accum = 0.0
+	var viewport := get_viewport()
+	if viewport == null:
+		return
+	var screen_pos := viewport.get_canvas_transform() * global_position
+	var vp_size := viewport.get_visible_rect().size
+	var margin := 60.0
+	var on_camera := screen_pos.x >= -margin and screen_pos.y >= -margin \
+		and screen_pos.x <= vp_size.x + margin and screen_pos.y <= vp_size.y + margin
+	if on_camera:
+		_off_camera_timer = 0.0
+	else:
+		_off_camera_timer += OFF_CAMERA_CHECK_INTERVAL
+		if _off_camera_timer >= OFF_CAMERA_DESTROY_TIME:
+			return_to_pool()
+
 func activate_from_pool(spawn_position: Vector2, spawn_direction: Vector2, spawn_speed: float, visual_only: bool = false) -> void:
 	_pool_active = true
+	_off_camera_timer = 0.0
+	_off_camera_check_accum = 0.0
 	global_position = spawn_position
 	direction = spawn_direction
 	speed = spawn_speed
@@ -77,6 +106,8 @@ func return_to_pool() -> void:
 
 func deactivate_to_pool() -> void:
 	_pool_active = false
+	_off_camera_timer = 0.0
+	_off_camera_check_accum = 0.0
 	direction = Vector2.RIGHT
 	visible = false
 	set_process(false)

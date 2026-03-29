@@ -55,10 +55,19 @@ jobs:
           Godot_v4.6-stable_linux.x86_64 --headless --path . --export-release "Windows Desktop 2" build/exports/windows-arm64/BubbleTanks.exe
           Godot_v4.6-stable_linux.x86_64 --headless --path . --export-release "macOS" build/exports/macos/BubbleTanks.zip
 
+      - name: Get tag commit message
+        id: tag_message
+        run: |
+          {
+            echo "message<<EOF"
+            git log -1 --format=%B "${{ github.ref_name }}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Package release archives and manifest
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
-          RELEASE_NOTES: ${{ github.event.head_commit.message }}
+          RELEASE_NOTES: ${{ steps.tag_message.outputs.message }}
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
           set -e

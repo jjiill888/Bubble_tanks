@@ -55,10 +55,10 @@ const BASIC_ENEMY_DISABLE_LEVEL := 3
 const REGULAR_BOSS_UNLOCK_LEVEL := 3
 const BOSS_SWARM_LEVEL := 6
 const MIN_BOSSES_AFTER_LEVEL_SIX := 4
-const MAX_REGULAR_BOSSES_ON_SCREEN := 6
+const MAX_REGULAR_BOSSES_ON_SCREEN := 4
 const EMPTY_SWARM_RECOVERY_BOSSES := 2
 const REGULAR_BOSS_RESPAWN_INTERVAL := 3.0
-const FINAL_BOSS_LEVEL := 15
+const FINAL_BOSS_LEVEL := 9
 const FINAL_BOSS_SPAWN_MARGIN := 320.0
 const PLAYER_BULLET_POOL_PREWARM := 96
 const PLAYER_MISSILE_POOL_PREWARM := 36
@@ -173,6 +173,9 @@ var _intro_overlay: ColorRect = null
 var _intro_waiting_for_start := true
 var _healing_bubble_spawn_cooldown := 0.0
 var _compound_hit_world: Object = null
+var _compound_hit_world_ready := false
+var _fallback_enemy_cache: Array = []
+var _fallback_enemy_cache_frame: int = -1
 var _update_manager: Control = null
 
 func _use_ascii_ui() -> bool:
@@ -596,16 +599,16 @@ func _advance_projectile_list(projectiles: Array, delta: float) -> void:
 		if not is_instance_valid(projectile):
 			projectiles.remove_at(i)
 			continue
-		if projectile.has_method("is_pool_active") and not projectile.is_pool_active():
+		if not projectile.is_pool_active():
 			projectiles.remove_at(i)
 			continue
-		if projectile.has_method("advance_projectile"):
-			projectile.advance_projectile(delta)
-		if projectile.has_method("is_pool_active") and not projectile.is_pool_active():
+		projectile.advance_projectile(delta)
+		if not projectile.is_pool_active():
 			projectiles.remove_at(i)
 
 func _setup_compound_hit_world() -> void:
 	_compound_hit_world = COMPOUND_HIT_WORLD_FALLBACK.new()
+	_compound_hit_world_ready = _compound_hit_world.has_method("query_hit")
 
 func get_compound_hit_world() -> Object:
 	return _compound_hit_world
@@ -616,7 +619,7 @@ func _projectile_hit_radius(projectile: Area2D) -> float:
 	return PLAYER_BULLET_HIT_RADIUS
 
 func _process_registered_hit(projectile: Area2D, bullet_position: Vector2) -> bool:
-	if _compound_hit_world == null or not _compound_hit_world.has_method("query_hit"):
+	if not _compound_hit_world_ready:
 		return false
 	var projectile_radius := _projectile_hit_radius(projectile)
 	var hit: Dictionary = _compound_hit_world.query_hit(bullet_position, projectile_radius)
@@ -633,16 +636,23 @@ func _process_registered_hit(projectile: Area2D, bullet_position: Vector2) -> bo
 	return false
 
 func register_player_bullet(projectile: Area2D) -> void:
-	if not _active_player_bullets.has(projectile):
-		_active_player_bullets.append(projectile)
+	_active_player_bullets.append(projectile)
 
 func register_player_missile(projectile: Area2D) -> void:
-	if not _active_player_missiles.has(projectile):
-		_active_player_missiles.append(projectile)
+	_active_player_missiles.append(projectile)
 
 func register_enemy_bullet(projectile: Area2D) -> void:
-	if not _active_enemy_bullets.has(projectile):
-		_active_enemy_bullets.append(projectile)
+	_active_enemy_bullets.append(projectile)
+
+func _get_fallback_enemies() -> Array:
+	var f := Engine.get_process_frames()
+	if f != _fallback_enemy_cache_frame:
+		_fallback_enemy_cache_frame = f
+		_fallback_enemy_cache.clear()
+		for e in $Enemies.get_children():
+			if is_instance_valid(e) and not e.has_method("hit_hit_world_part"):
+				_fallback_enemy_cache.append(e)
+	return _fallback_enemy_cache
 
 func process_player_bullet_hit(projectile: Area2D) -> bool:
 	var bullet_position := projectile.global_position
@@ -651,10 +661,8 @@ func process_player_bullet_hit(projectile: Area2D) -> bool:
 		return true
 	if _process_registered_hit(projectile, bullet_position):
 		return true
-	for enemy in $Enemies.get_children():
+	for enemy in _get_fallback_enemies():
 		if not is_instance_valid(enemy):
-			continue
-		if enemy.has_method("hit_hit_world_part"):
 			continue
 		if enemy.has_method("hit_by_player_projectile") and enemy.hit_by_player_projectile(projectile, projectile_radius):
 			return true
@@ -2879,11 +2887,14 @@ func _should_spawn_regular_boss() -> bool:
 			and _get_effective_game_level() < FINAL_BOSS_LEVEL
 
 ## 由 EnemyBoss 在核心被摧毁时调用
-func on_boss_killed(turret_count: int = 1, source_peer_id: int = -1) -> void:
+func on_boss_killed(turret_count: int = 1, source_peer_id: int = -1, is_dual_core: bool = false) -> void:
 	if is_game_over:
 		return
 	_regular_boss_spawn_cooldown = maxf(_regular_boss_spawn_cooldown, REGULAR_BOSS_RESPAWN_INTERVAL)
-	add_experience(_experience_for_regular_boss_turret_count(turret_count), source_peer_id)
+	var xp := _experience_for_regular_boss_turret_count(turret_count)
+	if is_dual_core:
+		xp *= 2.0
+	add_experience(xp, source_peer_id)
 
 func on_final_boss_killed() -> void:
 	if is_game_over or _final_boss_defeated:
