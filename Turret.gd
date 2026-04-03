@@ -37,7 +37,13 @@ const ANTIBODY_BURST_COUNT := 1
 const ANTIBODY_BURST_SPREAD := 0.26
 const ANTIBODY_BURST_LATERAL_SPACING := 5.5
 
+const SETTINGS_FILE_NAME := "bubble_tanks.cfg"
+const SETTINGS_SECTION_CONTROL := "control"
+const SETTINGS_KEY_FIRE := "fire_key"
+const DEFAULT_FIRE_KEY := KEY_J
 # ── 运行状态 ────────────────────────────────────────────────────────────────
+var _fire_keycode: int = DEFAULT_FIRE_KEY
+
 var can_fire := true
 var _dash_cd: float = 0.0
 var _dash_label: Label = null
@@ -96,6 +102,8 @@ func _ready() -> void:
 	_setup_fire_sfx_player()
 	if is_local_player:
 		_setup_dash_label()
+		_load_fire_keycode()
+
 	if _camera != null:
 		_camera.enabled = is_local_player
 		_camera.position_smoothing_enabled = true
@@ -104,6 +112,32 @@ func _ready() -> void:
 	var scene := get_tree().current_scene
 	if scene and scene.has_method("register_player"):
 		scene.register_player(self)
+
+# 读取配置文件中的射击键
+func _settings_file_path() -> String:
+	var base_dir := OS.get_executable_path().get_base_dir()
+	if base_dir.is_empty():
+		base_dir = ProjectSettings.globalize_path("res://")
+	return base_dir.path_join(SETTINGS_FILE_NAME)
+
+func _load_fire_keycode() -> void:
+	var config := ConfigFile.new()
+	var err := config.load(_settings_file_path())
+	if err == OK and config.has_section_key(SETTINGS_SECTION_CONTROL, SETTINGS_KEY_FIRE):
+		_fire_keycode = int(config.get_value(SETTINGS_SECTION_CONTROL, SETTINGS_KEY_FIRE, DEFAULT_FIRE_KEY))
+	else:
+		_fire_keycode = DEFAULT_FIRE_KEY
+
+func set_fire_keycode(keycode: int) -> void:
+	_fire_keycode = keycode
+	var config := ConfigFile.new()
+	var path := _settings_file_path()
+	var err := config.load(path)
+	if err != OK and err != ERR_FILE_NOT_FOUND:
+		return
+	config.set_value(SETTINGS_SECTION_CONTROL, SETTINGS_KEY_FIRE, keycode)
+	config.save(path)
+
 
 func _exit_tree() -> void:
 	if preview_mode:
@@ -247,15 +281,30 @@ func build_input_state() -> Dictionary:
 		dir.x += 1
 	if dir != Vector2.ZERO:
 		dir = dir.normalized()
+
+	# 新增：方向键控制射击方向
+	var aim_dir := Vector2.ZERO
+	if Input.is_key_pressed(KEY_UP):
+		aim_dir.y -= 1
+	if Input.is_key_pressed(KEY_DOWN):
+		aim_dir.y += 1
+	if Input.is_key_pressed(KEY_LEFT):
+		aim_dir.x -= 1
+	if Input.is_key_pressed(KEY_RIGHT):
+		aim_dir.x += 1
 	var aim_angle := rotation
-	var mouse_delta := get_global_mouse_position() - global_position
-	if mouse_delta.length_squared() > 0.0001:
-		aim_angle = mouse_delta.angle()
+	if aim_dir != Vector2.ZERO:
+		# 方向键有输入时，使用其方向
+		aim_angle = aim_dir.angle()
+	else:
+		var mouse_delta := get_global_mouse_position() - global_position
+		if mouse_delta.length_squared() > 0.0001:
+			aim_angle = mouse_delta.angle()
 	return {
 		"move_x": dir.x,
 		"move_y": dir.y,
 		"aim_angle": aim_angle,
-		"firing": Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) or Input.is_key_pressed(KEY_J),
+		"firing": Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) or Input.is_key_pressed(_fire_keycode),
 		"dash_pressed": Input.is_action_just_pressed("ui_accept"),
 	}
 

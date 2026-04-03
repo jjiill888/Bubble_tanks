@@ -212,6 +212,7 @@ func _is_reserved_intro_ui_event(event: InputEvent) -> bool:
 			or _is_control_hit(_audio_menu_button, point) \
 			or _is_control_hit(_update_channel_button, point) \
 			or _is_control_hit(_check_update_button, point) \
+			or _is_control_hit(_fire_key_btn, point) \
 			or _is_control_hit(_network_panel, point) \
 			or _is_control_hit(_audio_panel, point)
 
@@ -1261,6 +1262,57 @@ func _setup_pause_label() -> void:
 	_pause_label.add_theme_constant_override("shadow_offset_y", 2)
 	$CanvasLayer.add_child(_pause_label)
 
+# 存储按钮引用
+var _fire_key_btn: Button = null
+var _fire_key_popup: ColorRect = null
+var _fire_key_popup_label: Label = null
+var _fire_key_capture: bool = false
+
+func _on_fire_key_btn_pressed() -> void:
+	if _fire_key_popup != null:
+		_fire_key_popup.queue_free()
+		_fire_key_popup = null
+	# 居中半透明遮罩 + 提示文字
+	var overlay := ColorRect.new()
+	overlay.name = "FireKeyOverlay"
+	overlay.color = Color(0.0, 0.0, 0.0, 0.55)
+	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.process_mode = Node.PROCESS_MODE_ALWAYS
+	$CanvasLayer.add_child(overlay)
+	var label := Label.new()
+	label.text = _ui_text("请按下新的射击键", "Press new fire key")
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.set_anchors_preset(Control.PRESET_CENTER)
+	label.offset_left = -150.0
+	label.offset_right = 150.0
+	label.offset_top = -30.0
+	label.offset_bottom = 30.0
+	label.add_theme_font_size_override("font_size", 28)
+	label.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 0.95))
+	label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.9))
+	label.add_theme_constant_override("shadow_offset_x", 2)
+	label.add_theme_constant_override("shadow_offset_y", 2)
+	overlay.add_child(label)
+	_fire_key_popup = overlay
+	_fire_key_popup_label = label
+	_fire_key_capture = true
+
+
+
+func _set_fire_keycode_and_update_ui(keycode: int) -> void:
+	var player := get_player_node()
+	if is_instance_valid(player) and player.has_method("set_fire_keycode"):
+		player.set_fire_keycode(keycode)
+	if _fire_key_btn != null:
+		_fire_key_btn.text = _ui_text("射击键：", "Fire: ") + OS.get_keycode_string(keycode)
+
+func _get_fire_keycode() -> int:
+	var player := get_player_node()
+	if is_instance_valid(player):
+		return int(player._fire_keycode)
+	return KEY_J
+
 func _setup_intro_overlay() -> void:
 	_intro_overlay = ColorRect.new()
 	_intro_overlay.name = "IntroOverlay"
@@ -1297,8 +1349,8 @@ func _setup_intro_overlay() -> void:
 
 	var tips := Label.new()
 	tips.text = _ui_text(
-		"WASD 移动\n鼠标或 J 射击\n空格 冲刺 / 开始游戏\nEsc 暂停",
-		"WASD Move\nMouse or J Fire\nSpace Dash / Start\nEsc or P Pause"
+		"WASD 移动　←↑→↓ 瞄准\n鼠标或自定义键射击\n空格 冲刺 / 开始游戏\nEsc 暂停",
+		"WASD Move  Arrows Aim\nMouse or Custom Key Fire\nSpace Dash / Start\nEsc or P Pause"
 	)
 	tips.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tips.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -1571,6 +1623,23 @@ func _setup_network_ui() -> void:
 	_check_update_button.pressed.connect(_request_manual_update_check)
 	$CanvasLayer.add_child(_check_update_button)
 
+	# 射击键自定义按钮（Stable渠道上方）
+	_fire_key_btn = Button.new()
+	_fire_key_btn.name = "FireKeyButton"
+	_fire_key_btn.text = _ui_text("射击键：", "Fire: ") + OS.get_keycode_string(_get_fire_keycode())
+	_fire_key_btn.visible = false
+	_fire_key_btn.process_mode = Node.PROCESS_MODE_ALWAYS
+	_fire_key_btn.anchor_left = 1.0
+	_fire_key_btn.anchor_right = 1.0
+	_fire_key_btn.anchor_top = 1.0
+	_fire_key_btn.anchor_bottom = 1.0
+	_fire_key_btn.offset_left = -150.0
+	_fire_key_btn.offset_right = -20.0
+	_fire_key_btn.offset_top = -320.0
+	_fire_key_btn.offset_bottom = -270.0
+	_fire_key_btn.pressed.connect(_on_fire_key_btn_pressed)
+	$CanvasLayer.add_child(_fire_key_btn)
+
 	_network_panel = PanelContainer.new()
 	_network_panel.name = "NetworkPanel"
 	_network_panel.visible = false
@@ -1740,6 +1809,12 @@ func _update_network_pause_ui_visibility() -> void:
 		_update_channel_button.visible = should_show
 	if _check_update_button != null:
 		_check_update_button.visible = should_show
+	if _fire_key_btn != null:
+		_fire_key_btn.visible = should_show
+	if not should_show and _fire_key_popup != null:
+		_fire_key_popup.queue_free()
+		_fire_key_popup = null
+		_fire_key_capture = false
 	if not should_show and _network_panel != null:
 		_network_panel.visible = false
 	if not should_show and _audio_panel != null:
@@ -2083,6 +2158,20 @@ func _on_room_activated(_index: int) -> void:
 
 
 func _input(event: InputEvent) -> void:
+	# 自定义射击键捕获模式
+	if _fire_key_capture and event is InputEventKey and event.pressed and not event.echo:
+		var keycode: int = event.keycode
+		if keycode == KEY_ESCAPE:
+			# 按 Esc 取消
+			pass
+		else:
+			_set_fire_keycode_and_update_ui(keycode)
+		if _fire_key_popup != null:
+			_fire_key_popup.queue_free()
+			_fire_key_popup = null
+		_fire_key_capture = false
+		get_viewport().set_input_as_handled()
+		return
 	if _intro_waiting_for_start and _is_reserved_intro_ui_event(event):
 		return
 	if _intro_waiting_for_start and _is_intro_start_event(event):
