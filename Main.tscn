@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://cg7uht01eo43e"]
 
 [ext_resource type="Script" uid="uid://owo3juelipgg" path="res://Main.gd" id="1_main"]
-[ext_resource type="Script" path="res://AlgaeDecor.gd" id="7_algaedecor"]
 [ext_resource type="PackedScene" path="res://Turret.tscn" id="2_main"]
 [ext_resource type="PackedScene" path="res://Enemy.tscn" id="3_main"]
 [ext_resource type="PackedScene" path="res://Bullet.tscn" id="4_main"]
 [ext_resource type="PackedScene" path="res://EnemyCompound.tscn" id="5_main"]
-[ext_resource type="AudioStreamOggVorbis" path="res://Microscopic_Pursuit.ogg" id="6_bgm"]
+[ext_resource type="AudioStream" uid="uid://btc2m70qvlfx3" path="res://Microscopic_Pursuit.ogg" id="6_bgm"]
+[ext_resource type="Script" uid="uid://ci11lt16ui2yl" path="res://AlgaeDecor.gd" id="7_algaedecor"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xp_bg"]
 bg_color = Color(0.05, 0.08, 0.12, 0.88)
@@ -45,7 +45,6 @@ bullet_scene = ExtResource("4_main")
 [node name="BGM" type="AudioStreamPlayer" parent="." unique_id=200324991]
 process_mode = 3
 stream = ExtResource("6_bgm")
-bus = &"Master"
 volume_db = -2.0
 
 [node name="SpawnTimer" type="Timer" parent="." unique_id=911129015]
@@ -89,18 +88,17 @@ theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 24
 text = "Level: 1"
 
-[node name="XPBar" type="ProgressBar" parent="CanvasLayer"]
+[node name="XPBar" type="ProgressBar" parent="CanvasLayer" unique_id=1920815715]
 offset_left = 20.0
 offset_top = 134.0
 offset_right = 320.0
 offset_bottom = 154.0
-show_percentage = false
-max_value = 8.0
-value = 0.0
 theme_override_styles/background = SubResource("StyleBoxFlat_xp_bg")
 theme_override_styles/fill = SubResource("StyleBoxFlat_xp_fill")
+max_value = 8.0
+show_percentage = false
 
-[node name="XPLabel" type="Label" parent="CanvasLayer"]
+[node name="XPLabel" type="Label" parent="CanvasLayer" unique_id=1292095493]
 offset_left = 20.0
 offset_top = 156.0
 offset_right = 260.0
